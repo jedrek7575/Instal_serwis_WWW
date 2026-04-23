@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instal-Serwis</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/logo.webp">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/logo.webp">
+    
+    <link rel="manifest" href="site.webmanifest">
+    
+    <meta name="theme-color" content="#05070d">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* =========================================
+           ZMIENNE KOLORYSTYCZNE (SAMSUNG S8 BLUE VIBE)
+           ========================================= */
+        :root {
+            --bg-deep: #05070d; /* Niemal czarny granat */
+            --text-light: #e6ebf1; /* Przybrudzona niebieskim biel */
+            --text-muted: #8d9bb0;
+            --s8-blue-1: #2bc0e4; /* Jasny, mroźny błękit */
+            --s8-blue-2: #1e5799; /* Głęboki, elegancki niebieski */
+            --gradient-accent: linear-gradient(135deg, var(--s8-blue-1) 0%, var(--s8-blue-2) 100%);
+
+            /* AKCENT CZERWONY - BURGUNDY RED */
+        --s8-red-1: #e02f44; /* Nowoczesna, wibrująca malina/czerwień */
+        --s8-red-2: #8a1523; /* Głębokie, ekskluzywne bordo */
+        --gradient-accent-red: linear-gradient(135deg, var(--s8-red-1) 0%, var(--s8-red-2) 100%);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* =========================================
+           NAVBAR (2/3 ekranu, ostre ścięcie)
+           ========================================= */
+        .nav-wrapper {
+            position: fixed;
+            top: 0; right: 0;
+            width: 77vw;
+            height: 55px;
+            z-index: 1000;
+            
+        }
+
+         .nav-inner {
+            position: absolute; inset: 0;
+            background: rgba(5, 7, 13, 0);
+            
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            padding: 0 40px;
+        }
+
+        .nav-border {
+            opacity: 0;
+        }
+        /* Tło pod spodem tworzące gradientową krawędź */
+        .nav-wrapper.beyond .nav-border {
+            position: absolute; inset: 0;
+            background: var(--gradient-accent);
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            
+            transform: translateY(2px) translateX(-3px);
+            transition: 0.7s;
+            opacity: 1;
+        }
+        /* Główne tło navbara */
+        .nav-wrapper.beyond .nav-inner {
+            position: absolute; inset: 0;
+            background: rgba(5, 7, 13, 0.85);
+            backdrop-filter: blur(12px);
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            transition: 0.5s;
+        }
+        .nav-inner a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin-right: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+        .nav-inner a:hover { color: var(--s8-blue-1); }
+        
+        /* Klasa backupowa dodawana po zjechaniu z hero */
+        .nav-wrapper.beyond {
+            /* Miejsce na Twoje eksperymenty (np. inna przezroczystość, mniejsza wysokość) */
+            
+        }
+
+        /* =========================================
+           PRZEŁĄCZNIK JĘZYKÓW
+           ========================================= */
+        .lang-switcher {
+            display: flex;
+            gap: 8px;
+            margin-right: 20px;
+        }
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            /* Kanciasty styl podobny do cięcia navbara */
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+        }
+        .lang-btn:hover, .lang-btn.active {
+            background: var(--gradient-accent);
+            color: #fff;
+            border-color: transparent;
+        }
+
+
+
+        .hamburger {
+           display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 24px;
+            cursor: pointer;
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            z-index: 1001; 
+        }
+/* =========================================
+           HAMBURGER (Ostre, asymetryczne brzytwy)
+           ========================================= */
+        .hamburger span {
+            width: 100%;
+            height: 4px; /* Ciut grubsze, żeby było widać ostre kąty */
+            background: var(--gradient-accent); /* Zamiast bieli - smolisty gradient S8 */
+            border-radius: 0; /* Wywalamy nudne, NPC-owe zaokrąglenia */
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        /* Górna linia: cięta z lewej i prawej strony u dołu */
+        .hamburger span:nth-child(1) {
+            clip-path: polygon(0 0, 100% 0, 92% 100%, 5% 100%);
+        }
+
+        /* Środkowa linia: przesunięte cięcie, jest krótsza dla dynamiki */
+        .hamburger span:nth-child(2) {
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+            width: 80%; 
+            align-self: flex-end; /* Wyrównana do prawej */
+        }
+
+        /* Dolna linia: ostre wejście od lewej */
+        .hamburger span:nth-child(3) {
+            clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Mały bajer: środkowa linia "dobija" do krawędzi, gdy ktoś na nią kliknie/najedzie */
+        .hamburger:hover span:nth-child(2) {
+            width: 100%;
+            background: var(--gradient-accent-red);
+        }
+
+                .hamburger:hover span:nth-child(1) {
+            width: 80%;
+            background: var(--gradient-accent-red);
+        }
+
+                .hamburger:hover span:nth-child(3) {
+            width: 80%;
+            background: var(--gradient-accent-red);
+        }
+
+        .hamburger.active:hover span:nth-child(3) {
+            
+            background: var(--gradient-accent-red);
+        }
+
+                .hamburger.active:hover span:nth-child(1) {
+            
+            background: var(--gradient-accent-red);
+        }
+
+
+
+   
+
+        /* =========================================
+           HERO SECTION
+           ========================================= */
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: transparent;
+        }
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: url('Images/bg.webp') center/cover; /* Zmień na swój obraz */
+            filter: blur(7px) brightness(0.5); /* Mocne rozmycie i przyciemnienie */
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            padding: 40px 60px;
+            z-index: 2;
+        }
+        .hero-content h1 {
+            font-size: 4rem;
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .hero-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Animacja rysowanej ramki SVG */
+        .svg-frame {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            overflow: visible;
+        }
+        .draw-path {
+            fill: none;
+            stroke: url(#grad);
+            stroke-width: 3;
+            stroke-dasharray: 600;
+            stroke-dashoffset: 600;
+            /* Cubic-bezier: startuje wolno, potem pociąga zamaszyście, na końcu lekko hamuje */
+            animation: drawMarker 2s cubic-bezier(0.5, 0, 0.1, 1) forwards;
+            animation-delay: 0.3s;
+        }
+        @keyframes drawMarker {
+            to { stroke-dashoffset: 0; }
+        }
+
+        /* =========================================
+           O NAS (Crash Effect)
+           ========================================= */
+        .section-padding { padding: 120px 20px; max-width: 1000px; margin: 0 auto; }
+        
+        .about-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 60px;
+            border-radius: 4px;
+            opacity: 0; /* Ukryte przed crashem */
+        }
+        /* Klasa dodawana przez JS gdy element wchodzi na ekran */
+        .about-box.crashed {
+            animation: crashReveal 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        @keyframes crashReveal {
+            0% { opacity: 0; transform: translateY(-80px) scale(1.08) rotate(3deg); }
+            50% { opacity: 1; transform: translateY(5px) scale(0.98) rotate(-1deg); }
+            75% { transform: translateY(-2px) rotate(0.5deg); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
+        }
+
+        h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--s8-blue-1); }
+        p.elegant-text { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; }
+
+        /* =========================================
+           REALIZACJE (Stosowe Karuzele)
+           ========================================= */
+        .portfolio-section { padding-bottom: 150px; }
+        .carousel-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+        .carousel-stack {
+            position: relative;
+            width: 450px;
+            height: 300px;
+        }
+        .carousel-stack img {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        
+        /* Pozycje dla 3 kart w stosie */
+        .card.prev { transform: translate(-20px, 15px) rotate(-6deg); z-index: 1; opacity: 0.6; }
+        .card.active { transform: translate(0, 0) rotate(0deg) scale(1.05); z-index: 10; opacity: 1; box-shadow: 0 20px 40px rgba(43, 192, 228, 0.2); }
+        .card.next { transform: translate(25px, -10px) rotate(4deg); z-index: 2; opacity: 0.8; }
+
+        .btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            width: 50px; height: 50px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .btn:hover { background: var(--gradient-accent); border-color: transparent; }
+
+        /* Dla urządzeń o szerokości ekranu 700px i mniej */
+        @media (max-width: 700px) {
+            
+            .hero-content h1 {
+                font-size: 2.5rem; /* Zmniejszamy wielki napis na mniejszym ekranie */
+            }
+
+            .nav-wrapper {
+                width: 15vw;
+                transition: 0.3s;
+            }
+
+         .nav-inner {
+            position: absolute; inset: 0;
+            background: rgba(5, 7, 13, 0.85);
+            backdrop-filter: blur(12px);
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            display: flex;
+            align-items: center;
+            padding: 0 40px;
+            transition: 0.5s;
+        }
+
+            .nav-inner {
+                flex-direction: column;
+                justify-content: space-between;
+                
+            }
+
+            .nav-inner a {
+                display: none;
+                padding-top: 25%;
+            }
+
+            .lang-switcher {
+                padding-bottom: 25%;
+                padding-top: 25%;
+            }
+
+            .lang-btn {
+                display: none;
+            }
+
+                    .nav-wrapper.beyond .nav-border {
+            position: absolute; inset: 0;
+            background: var(--gradient-accent);
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            
+            transform: translateY(2px) translateX(-3px);
+            transition: 0.7s;
+            opacity: 1;
+        }
+
+         .nav-border {
+            position: absolute; inset: 0;
+            background: var(--gradient-accent);
+            clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+            
+            transform: translateY(2px) translateX(-3px);
+            transition: 0.7s;
+            opacity: 1;
+        }
+
+             .nav-wrapper.active {
+                width: 95vw; 
+                height: 90vh;
+            }
+
+            .nav-wrapper.active .nav-inner a,.nav-wrapper.active .lang-switcher, .nav-wrapper.active .lang-btn {
+                display: flex;
+            }
+
+                    .lang-switcher {
+            display: flex;
+            gap: 8px;
+            margin-right: 30px;
+        }
+
+        .hamburger {
+            display: flex;
+        }
+
+
+        /* 5. Animacja burgera w elegancki krzyżyk (X) gdy jest .active */
+            .hamburger.active span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
+
+            .carousel-stack {
+                width: 100%; /* Karuzela musi się zwęzić */
+                height: 200px;
+            }
+
+            .about-box {
+                padding: 30px; /* Mniejszy padding, żeby tekst nie był "ściśnięty" */
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="nav-wrapper" id="navbar">
+        <div class="nav-border"></div>
+        <div class="nav-inner">
+            <a href="index.html"  data-i18n="nav-home nav-element">Strona Główna</a>
+            <a href="zespol.html"  data-i18n="nav-about nav-element">Zespół</a>
+            <a href="realizacje.html"  data-i18n="nav-portfolio nav-element">Realizacje</a>
+            <a href="kontakt.html"  data-i18n="nav-contact nav-element">Kontakt</a>
+            
+            <div class="lang-switcher">
+                <button  class="lang-btn active nav-element" data-lang="pl">PL</button>
+                <button  class="lang-btn nav-element" data-lang="en">EN</button>
+                <button  class="lang-btn nav-element" data-lang="de">DE</button>
+            </div>
+
+            <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+            </div>
+
+
+        </div>
+    </nav>
+
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <svg class="svg-frame" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:var(--s8-blue-1); stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:var(--s8-blue-2); stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M 50 5 L -5 15 L 10 40" class="draw-path" />
+                <path d="M 75 95 L 105 85 L 90 20" class="draw-path" />
+            </svg>
+            
+            <h1>Instal-Serwis</h1>
+            <p data-i18n="hero-desc">Tradycja w montażu, precyzja w detalu. Rodzinne rzemiosło instalacji gazowych na bezkompromisowym poziomie.</p>
+        </div>
+    </section>
+
+    <section id="about" class="section-padding">
+        <div class="about-box" id="about-content">
+            <h2 data-i18n="about-title">Kunszt przekazywany w genach</h2>
+            <p class="elegant-text" data-i18n="about-p1">Nie jesteśmy kolejną bezosobową korporacją. Jesteśmy rodziną, która od pokoleń dba o bezpieczeństwo i ciepło w domach naszych klientów. Znamy każdą rurkę, każdy zawór i każdy, najdrobniejszy przepis prawny.</p>
+            <p class="elegant-text" data-i18n="about-p2">Nasza wiedza to nie tylko wyuczone procedury – to dziesiątki tysięcy godzin spędzonych z kluczem w ręku w kotłowniach, domach i obiektach przemysłowych. Podchodzimy do Twojej instalacji z pedantyczną dokładnością, montując ją dokładnie tak, jak zrobilibyśmy to u siebie. Bo zaufania w naszej branży nie buduje się słowami, a szczelnością każdej wykonanej spoiny.</p>
+        </div>
+    </section>
+
+    <section id="portfolio" class="section-padding portfolio-section">
+        <h2 data-i18n="portfolio-title">Wybrane realizacje</h2>
+        <p class="elegant-text" style="margin-bottom: 60px;" data-i18n="portfolio-desc">Tam, gdzie inni widzą problem, my widzimy gotowe rozwiązanie. Zobacz efekty naszej pracy.</p>
+
+        <div class="carousel-wrapper" data-carousel>
+            <button class="btn btn-prev">❮</button>
+            <div class="carousel-stack">
+                <img src="Images/Realizacje/r11.jpg" class="card active" alt="Realizacja 1">
+                <img src="Images/Realizacje/r12.jpg" class="card next" alt="Realizacja 2">
+                <img src="Images/Realizacje/r13.jpg" class="card prev" alt="Realizacja 3">
+            </div>
+            <button class="btn btn-next">❯</button>
+        </div>
+
+        <div class="carousel-wrapper" data-carousel>
+            <button class="btn btn-prev">❮</button>
+            <div class="carousel-stack">
+                <img src="Images/Realizacje/r14.jpg" class="card active" alt="Realizacja 4">
+                <img src="Images/Realizacje/r15.jpg" class="card next" alt="Realizacja 5">
+                <img src="Images/Realizacje/r16.jpg" class="card prev" alt="Realizacja 6">
+            </div>
+            <button class="btn btn-next">❯</button>
+        </div>
+    </section>
+
+    <script>
+        // 1. Obsługa navbara (.beyond dodawane po opuszczeniu Hero)
+        const navbar = document.getElementById('navbar');
+        const heroHeight = document.getElementById('hero').offsetHeight;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > heroHeight - 80) {
+                navbar.classList.add('beyond');
+            } else {
+                navbar.classList.remove('beyond');
+            }
+        });
+
+        // 2. Crash Effect (Intersection Observer)
+        const aboutContent = document.getElementById('about-content');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('crashed');
+                }
+            });
+        }, { threshold: 0.3 }); // Trigger gdy 30% elementu będzie widoczne
+
+        observer.observe(aboutContent);
+
+        // 3. Logika karuzel stosowych
+        document.querySelectorAll('[data-carousel]').forEach(carousel => {
+            const cards = Array.from(carousel.querySelectorAll('.card'));
+            const btnPrev = carousel.querySelector('.btn-prev');
+            const btnNext = carousel.querySelector('.btn-next');
+            
+            // Funkcja przeliczająca klasy na podstawie indeksu aktywnej karty
+            const updateCards = () => {
+                cards.forEach(card => card.className = 'card'); // reset
+                cards[0].classList.add('active');
+                cards[1].classList.add('next');
+                cards[2].classList.add('prev');
+            };
+
+            btnNext.addEventListener('click', () => {
+                // Przesuwamy pierwszą kartę na koniec tablicy
+                cards.push(cards.shift());
+                updateCards();
+            });
+
+            btnPrev.addEventListener('click', () => {
+                // Przesuwamy ostatnią kartę na początek tablicy
+                cards.unshift(cards.pop());
+                updateCards();
+            });
+        });
+
+        // 4. Logika Tłumaczeń (PL / EN / DE)
+        const translations = {
+            pl: {
+                "nav-home": "Strona Główna",
+                "nav-about": "O nas",
+                "nav-portfolio": "Realizacje",
+                "nav-contact": "Kontakt",
+                "hero-desc": "Tradycja w montażu, precyzja w detalu. Rodzinne rzemiosło instalacji gazowych na bezkompromisowym poziomie.",
+                "about-title": "Kunszt przekazywany w genach",
+                "about-p1": "Nie jesteśmy kolejną bezosobową korporacją. Jesteśmy rodziną, która od pokoleń dba o bezpieczeństwo i ciepło w domach naszych klientów. Znamy każdą rurkę, każdy zawór i każdy, najdrobniejszy przepis prawny.",
+                "about-p2": "Nasza wiedza to nie tylko wyuczone procedury – to dziesiątki tysięcy godzin spędzonych z kluczem w ręku w kotłowniach, domach i obiektach przemysłowych. Podchodzimy do Twojej instalacji z pedantyczną dokładnością, montując ją dokładnie tak, jak zrobilibyśmy to u siebie. Bo zaufania w naszej branży nie buduje się słowami, a szczelnością każdej wykonanej spoiny.",
+                "portfolio-title": "Wybrane realizacje",
+                "portfolio-desc": "Tam, gdzie inni widzą problem, my widzimy gotowe rozwiązanie. Zobacz efekty naszej pracy."
+            },
+            en: {
+                "nav-home": "Home",
+                "nav-about": "About us",
+                "nav-portfolio": "Projects",
+                "nav-contact": "Contact",
+                "hero-desc": "Tradition in assembly, precision in detail. Family craftsmanship of gas installations at an uncompromising level.",
+                "about-title": "Craftsmanship passed down in our genes",
+                "about-p1": "We are not just another faceless corporation. We are a family that has been taking care of the safety and warmth in our clients' homes for generations. We know every pipe, every valve, and every tiny legal regulation.",
+                "about-p2": "Our knowledge is not just learned procedures – it's tens of thousands of hours spent with a wrench in hand in boiler rooms, homes, and industrial facilities. We approach your installation with pedantic accuracy, mounting it exactly as we would in our own home. Because trust in our industry is not built with words, but with the tightness of every weld made.",
+                "portfolio-title": "Selected projects",
+                "portfolio-desc": "Where others see a problem, we see a ready solution. See the results of our work."
+            },
+            de: {
+                "nav-home": "Startseite",
+                "nav-about": "Über uns",
+                "nav-portfolio": "Projekte",
+                "nav-contact": "Kontakt",
+                "hero-desc": "Tradition in der Montage, Präzision im Detail. Familienhandwerk von Gasinstallationen auf kompromisslosem Niveau.",
+                "about-title": "Handwerkskunst in den Genen",
+                "about-p1": "Wir sind nicht nur ein weiterer gesichtsloser Konzern. Wir sind eine Familie, die sich seit Generationen um die Sicherheit und Wärme in den Häusern unserer Kunden kümmert. Wir kennen jedes Rohr, jedes Ventil und jede kleinste rechtliche Vorschrift.",
+                "about-p2": "Unser Wissen besteht nicht nur aus erlernten Verfahren – es sind Zehntausende von Stunden, die wir mit einem Schraubenschlüssel in der Hand in Heizungsräumen, Häusern und Industrieanlagen verbracht haben. Wir gehen mit pedantischer Genauigkeit an Ihre Installation heran und montieren sie genau so, wie wir es bei uns zu Hause tun würden. Denn Vertrauen in unserer Branche wird nicht mit Worten aufgebaut, sondern mit der Dichtheit jeder ausgeführten Schweißnaht.",
+                "portfolio-title": "Ausgewählte Projekte",
+                "portfolio-desc": "Wo andere ein Problem sehen, sehen wir eine fertige Lösung. Sehen Sie die Ergebnisse unserer Arbeit."
+            }
+        };
+
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const i18nElements = document.querySelectorAll('[data-i18n]');
+
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Zmiana aktywnego przycisku
+                langButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Podmiana tekstów
+                const selectedLang = btn.getAttribute('data-lang');
+                i18nElements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if(translations[selectedLang][key]) {
+                        el.textContent = translations[selectedLang][key];
+                    }
+                });
+            });
+        });
+
+        // 1. Łapiemy hamburgera i całego navbara po ID
+const hamburger = document.getElementById('hamburger');
+
+
+// 2. Łapiemy wszystkie linki po klasie (zmień w HTML id="nav-element" na class="nav-element")
+const navElements = document.querySelectorAll('.nav-element');
+
+// 3. Logika kliknięcia w hamburgera
+hamburger.addEventListener('click', () => {
+    // toggle() sprawdza: jeśli klasy nie ma, to ją dodaje; jeśli jest, to ją zabiera
+    hamburger.classList.toggle('active');
+    navbar.classList.toggle('active');
+});
+
+// 4. Logika kliknięcia w jakikolwiek link w menu
+navElements.forEach(element => {
+    element.addEventListener('click', () => {
+        // remove() twardo zabiera klasę (menu się zamyka po kliknięciu)
+        hamburger.classList.remove('active');
+        navbar.classList.remove('active');
+    });
+});
+    </script>
+
+</body>
+</html>
