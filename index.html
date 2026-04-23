@@ -289,8 +289,125 @@
             100% { opacity: 1; transform: translateY(0) scale(1) rotate(0); }
         }
 
-        h2 { font-size: 2.5rem; margin-bottom: 20px; color: var(--s8-blue-1); }
-        p.elegant-text { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; }
+        .about-layout {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            padding: 120px 20px;
+            max-width: 1400px; /* Zwiększyliśmy szerokość, żeby pomieścić zdjęcia */
+            margin: 0 auto;
+        }
+
+        /* Ustawienie szerokości tekstu na środku */
+        .about-layout .about-box {
+            width: 45%;
+            margin: 0; 
+        }
+
+        /* Pionowe banery ze zdjęciami */
+        .about-img {
+            width: 30%;
+            height: 550px;
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+            
+            transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+
+
+        /* Ostre ścięcia w stylu Twojego navbara */
+        .about-img.left {
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+
+        .about-img.right {
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        h2 { font-size: 2.5rem; margin-bottom: 20px; margin-left: 20px; color: var(--s8-blue-1); }
+        p.elegant-text { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; max-width: 80%; }
+        p.about-text { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); max-width: 100%; }
+
+        /* =========================================
+           OFERTA (PARALLAX TILES)
+           ========================================= */
+        .offer-section {
+            max-width: 100vw;
+            padding-right: 5%;
+            padding-left: 5%;
+        }
+        
+        .offer-tile {
+            position: relative;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            margin-bottom: 50px;
+            display: flex;
+            align-items: stretch;
+            min-height: 350px; /* Minimalna wysokość kafelka */
+            /* Zabezpiecza ostre rogi ramki */
+            border-radius: 4px;
+        }
+
+        .offer-h2 {
+            margin-left: 15%;
+        }
+
+        .offer-text {
+            width: 55%; /* Tekst zajmuje lewą stronę */
+            padding: 50px;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .offer-text h3 {
+            font-size: 1.8rem;
+            margin: 0 0 15px 0;
+            color: var(--text-light);
+        }
+
+
+
+        .offer-accent {
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-accent);
+            margin-top: auto; /* Wypycha pasek na sam dół tekstu */
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        }
+
+        .offer-img-wrapper {
+            position: absolute;
+            top: 0; right: 0;
+            width: 55%; /* Lekko nachodzi na tekst dla dynamiki */
+            height: 100%;
+            /* To robi to niesamowite ostre odcięcie zdjęcia */
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .offer-image {
+            width: 100%;
+            height: 100%;
+            /* MAGIA PARALLAXA */
+            background-attachment: fixed;
+            background-position: center right;
+            background-size: cover;
+            background-repeat: no-repeat;
+            /* Lekkie przyciemnienie zdjęcia, żeby nie "krzyczało" na tle czarnej strony */
+            filter: brightness(0.4) grayscale(20%);
+            transition: filter 0.5s ease;
+        }
+
+        /* Hover na kafelek rozjaśnia zdjęcie */
+        .offer-tile:hover .offer-image {
+            filter: brightness(0.7) grayscale(0%);
+        }
 
         /* =========================================
            REALIZACJE (Stosowe Karuzele)
@@ -335,6 +452,150 @@
             display: flex; justify-content: center; align-items: center;
         }
         .btn:hover { background: var(--gradient-accent); border-color: transparent; }
+
+        /* =========================================
+           PRZYCISK AKCENTOWY (CZYTAJ WIĘCEJ)
+           ========================================= */
+        .btn-accent {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 45px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.04); /* Bardzo delikatne, szklane tło */
+            /* Agresywne ucięcie - lewa góra i prawy dół */
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden; /* Ukrywa gradient zanim wjedzie */
+            margin-top: 20px;
+            max-width: 20rem;
+        }
+
+        /* Gradient ładujący się w tle */
+        .btn-accent::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; /* Domyślnie schowany z lewej strony */
+            width: 100%; height: 100%;
+            background: var(--gradient-accent);
+            transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: -1; /* Musi być pod tekstem */
+        }
+
+        /* Strzałka w przycisku */
+        .btn-accent .arrow {
+            margin-left: 15px;
+            font-size: 1rem;
+            transition: transform 0.4s ease;
+        }
+
+        /* EFEKT HOVER (najechanie myszką) */
+        .btn-accent:hover {
+            color: #fff;
+            transform: translateX(5px); /* Przycisk dynamicznie skacze lekko w prawo */
+        }
+
+        .btn-accent:hover::before {
+            left: 0; /* Gradient wjeżdża i wypełnia tło */
+        }
+
+        .btn-accent:hover .arrow {
+            transform: translateX(5px); /* Strzałka wysuwa się jeszcze kawałek dalej */
+        }
+
+        /* =========================================
+           STOPKA (FOOTER)
+           ========================================= */
+        .site-footer {
+            background-color: #030408; /* Najciemniejszy punkt na stronie */
+            position: relative;
+            padding-top: 70px;
+            font-family: 'Montserrat', sans-serif;
+            border-top: 1px solid rgba(255,255,255,0.02);
+        }
+
+        /* Akcentowy pasek gradientu na górze */
+        .footer-top-accent {
+            position: absolute;
+            top: -2px; left: 0;
+            width: 100%; height: 2px;
+            background: var(--gradient-accent);
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px 50px 40px;
+            gap: 40px;
+        }
+
+        .footer-col {
+            flex: 1;
+            min-width: 250px; /* Nie pozwoli kolumnom być zbyt wąskimi */
+        }
+
+        .footer-brand {
+            font-size: 1.8rem;
+            color: var(--text-light);
+            margin: 0 0 15px 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .footer-col h4 {
+            color: var(--s8-blue-1); /* Błękitne nagłówki kolumn */
+            font-size: 1.1rem;
+            margin: 0 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .footer-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-list li {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .accent-icon {
+            color: var(--s8-blue-1);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding: 20px;
+            background-color: #010103;
+            color: rgba(141, 155, 176, 0.5); /* Mocno zgaszony szary */
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
 
         /* Dla urządzeń o szerokości ekranu 700px i mniej */
         @media (max-width: 700px) {
@@ -424,6 +685,45 @@
             .hamburger.active span:nth-child(2) { opacity: 0; }
             .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
 
+            /* RWD dla sekcji O Nas (Tryptyk) */
+            .about-layout {
+                flex-direction: column;
+                padding: 80px 20px;
+                gap: 20px;
+            }
+            .about-layout .about-box {
+                width: 100%;
+                padding: 30px;
+                order: 1; /* Tekst ląduje na samej górze */
+            }
+            .about-img {
+                width: 100%;
+                height: 250px;
+                background-attachment: scroll; /* Ratunek dla urządzeń mobilnych */
+                clip-path: none; /* Proste krawędzie na telefonie */
+            }
+            .about-img.left { order: 2; } /* Zdjęcie pod tekstem */
+            .about-img.right { order: 3; } /* Zdjęcie na samym dole */
+
+            /* Oferta na telefony */
+            .offer-tile {
+                flex-direction: column;
+            }
+            .offer-text {
+                width: 100%;
+                padding: 30px;
+            }
+            .offer-img-wrapper {
+                position: relative;
+                width: 100%;
+                height: 250px;
+                clip-path: none; /* Wyłączamy ostre cięcie na telefonie */
+            }
+            .offer-image {
+                background-attachment: scroll; /* RATUJE WYGLĄD NA IPHONE! */
+                background-position: center;
+            }
+
             .carousel-stack {
                 width: 100%; /* Karuzela musi się zwęzić */
                 height: 200px;
@@ -431,6 +731,13 @@
 
             .about-box {
                 padding: 30px; /* Mniejszy padding, żeby tekst nie był "ściśnięty" */
+            }
+
+            /* RWD dla Stopki */
+            .footer-container {
+                flex-direction: column;
+                padding: 0 20px 30px 20px;
+                gap: 30px;
             }
         }
 
@@ -481,17 +788,69 @@
         </div>
     </section>
 
-    <section id="about" class="section-padding">
+<section id="about" class="about-layout">
+        <div class="about-img left" style="background-image: url('https://picsum.photos/id/1043/800/1000');"></div>
+        
         <div class="about-box" id="about-content">
-            <h2 data-i18n="about-title">Kunszt przekazywany w genach</h2>
-            <p class="elegant-text" data-i18n="about-p1">Nie jesteśmy kolejną bezosobową korporacją. Jesteśmy rodziną, która od pokoleń dba o bezpieczeństwo i ciepło w domach naszych klientów. Znamy każdą rurkę, każdy zawór i każdy, najdrobniejszy przepis prawny.</p>
-            <p class="elegant-text" data-i18n="about-p2">Nasza wiedza to nie tylko wyuczone procedury – to dziesiątki tysięcy godzin spędzonych z kluczem w ręku w kotłowniach, domach i obiektach przemysłowych. Podchodzimy do Twojej instalacji z pedantyczną dokładnością, montując ją dokładnie tak, jak zrobilibyśmy to u siebie. Bo zaufania w naszej branży nie buduje się słowami, a szczelnością każdej wykonanej spoiny.</p>
+            <h2 data-i18n="about-title">Instalacje przemysłowe</h2>
+            <p class="about-text" data-i18n="about-p1">Jesteśmy rodzinną firmą, która od blisko dwóch dekad wyznacza standardy na polskim rynku instalacji przemysłowych. Od budowy fundamentów, przez serwis zbiorników kriogenicznych, aż po konstruowanie skomplikowanych systemów gazów technicznych - bierzemy pełną odpowiedzialność za to, co tworzymy.</p>
+            <p class="about-text" data-i18n="about-p2">Zaufali nam liderzy branży energetycznej, medycznej i chemicznej, bo wiedzą, że za naszymi projektami stoi nie tylko rzemieślnicza precyzja, ale też pokoleniowa pasja do inżynierii. Nasza wiedza ewoluuje wraz z technologią, ale jedno pozostaje niezmienne: jakość, za którą ręczymy własnym nazwiskiem.</p>
+        </div>
+
+        <div class="about-img right" style="background-image: url('https://picsum.photos/id/1014/800/1000');"></div>
+    </section>
+
+    <section id="offer" class="offer-section">
+        <h2 class="offer-h2" data-i18n="offer-title">Nasza oferta</h2>
+        <p class="elegant-text offer-h2" style="margin-bottom: 60px;" data-i18n="offer-desc">Integracja zaawansowanych systemów wymaga rozwiązań szytych na miarę. <br> Sprawdź, w czym się specjalizujemy.</p>
+
+        <div class="offer-tile">
+            <div class="offer-text">
+                <h3 data-i18n="offer-1-title">Instalacje Gazów Technicznych</h3>
+                <p class="elegant-text" data-i18n="offer-1-desc">Kompleksowe wdrażanie magistrali gazowych dla hal produkcyjnych, szpitali i zakładów chemicznych. Od projektu po rygorystyczne testy szczelności.</p>
+               <a href="#" class="btn-accent">
+                <span data-i18n="btn-read-more">Czytaj więcej</span>
+                <span class="arrow">❯</span>
+                </a>
+               
+            </div>
+            <div class="offer-img-wrapper">
+                <div class="offer-image" style="background-image: url('https://picsum.photos/id/1080/1920/1080');"></div>
+            </div>
+        </div>
+
+        <div class="offer-tile">
+            <div class="offer-text">
+                <h3 data-i18n="offer-2-title">Zbiorniki Kriogeniczne</h3>
+                <p class="elegant-text" data-i18n="offer-2-desc">Profesjonalny montaż i integracja stacji zgazowania. Operujemy na sprzęcie najwyższej klasy, gwarantując parametry niezbędne do bezpiecznej pracy.</p>
+                               <a href="#" class="btn-accent">
+                <span data-i18n="btn-read-more">Czytaj więcej</span>
+                <span class="arrow">❯</span>
+                </a>
+            </div>
+            <div class="offer-img-wrapper">
+                <div class="offer-image" style="background-image: url('https://picsum.photos/id/1076/1920/1080');"></div>
+            </div>
+        </div>
+
+        <div class="offer-tile">
+            <div class="offer-text">
+                <h3 data-i18n="offer-3-title">Konstrukcje Przemysłowe</h3>
+                <p class="elegant-text" data-i18n="offer-3-desc">Budujemy technologiczne kręgosłupy fabryk. Wykonujemy zaawansowane podpory, estakady i systemy nośne z inżynieryjną dokładnością.</p>
+                               <a href="#" class="btn-accent">
+                <span data-i18n="btn-read-more">Czytaj więcej</span>
+                <span class="arrow">❯</span>
+                </a>
+            </div>
+            <div class="offer-img-wrapper">
+                <div class="offer-image" style="background-image: url('https://picsum.photos/id/1020/1920/1080');"></div>
+            </div>
         </div>
     </section>
 
     <section id="portfolio" class="section-padding portfolio-section">
-        <h2 data-i18n="portfolio-title">Wybrane realizacje</h2>
-        <p class="elegant-text" style="margin-bottom: 60px;" data-i18n="portfolio-desc">Tam, gdzie inni widzą problem, my widzimy gotowe rozwiązanie. Zobacz efekty naszej pracy.</p>
+        
+        
 
         <div class="carousel-wrapper" data-carousel>
             <button class="btn btn-prev">❮</button>
@@ -513,6 +872,39 @@
             <button class="btn btn-next">❯</button>
         </div>
     </section>
+
+    <footer class="site-footer">
+        <div class="footer-top-accent"></div>
+        
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-brand">Instal-Serwis</h3>
+                <p class="footer-text" data-i18n="footer-motto">Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h4 data-i18n="footer-contact-title">Kontakt</h4>
+                <ul class="footer-list">
+                    <li><span class="accent-icon">⚲</span> ul. Źródlana 5, 42-470 Siewierz</li>
+                    <li><span class="accent-icon">☏</span> +48 797 181 484</li>
+                    <li><span class="accent-icon">✉</span> biuro@instal-serwis.pl</li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 data-i18n="footer-company-title">Dane firmowe</h4>
+                <ul class="footer-list">
+                    <li><strong style="color: var(--text-light);">KOCHLIK ANDRZEJ INSTAL-SERWIS</strong></li>
+                    <li>NIP: 6491366095</li>
+                    <li>REGON: 273253330</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year"></span> KOCHLIK ANDRZEJ INSTAL-SERWIS. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
 
     <script>
         // 1. Obsługa navbara (.beyond dodawane po opuszczeniu Hero)
@@ -574,11 +966,12 @@
                 "nav-portfolio": "Realizacje",
                 "nav-contact": "Kontakt",
                 "hero-desc": "Tradycja w montażu, precyzja w detalu. Rodzinne rzemiosło instalacji gazowych na bezkompromisowym poziomie.",
-                "about-title": "Kunszt przekazywany w genach",
-                "about-p1": "Nie jesteśmy kolejną bezosobową korporacją. Jesteśmy rodziną, która od pokoleń dba o bezpieczeństwo i ciepło w domach naszych klientów. Znamy każdą rurkę, każdy zawór i każdy, najdrobniejszy przepis prawny.",
-                "about-p2": "Nasza wiedza to nie tylko wyuczone procedury – to dziesiątki tysięcy godzin spędzonych z kluczem w ręku w kotłowniach, domach i obiektach przemysłowych. Podchodzimy do Twojej instalacji z pedantyczną dokładnością, montując ją dokładnie tak, jak zrobilibyśmy to u siebie. Bo zaufania w naszej branży nie buduje się słowami, a szczelnością każdej wykonanej spoiny.",
-                "portfolio-title": "Wybrane realizacje",
-                "portfolio-desc": "Tam, gdzie inni widzą problem, my widzimy gotowe rozwiązanie. Zobacz efekty naszej pracy."
+                "about-title": "Instalacje przemysłowe",
+                "about-p1": "Jesteśmy rodzinną firmą, która od blisko dwóch dekad wyznacza standardy na polskim rynku instalacji przemysłowych. Od budowy fundamentów, przez serwis zbiorników kriogenicznych, aż po konstruowanie skomplikowanych systemów gazów technicznych - bierzemy pełną odpowiedzialność za to, co tworzymy.",
+                "about-p2": "Zaufali nam liderzy branży energetycznej, medycznej i chemicznej, bo wiedzą, że za naszymi projektami stoi nie tylko rzemieślnicza precyzja, ale też pokoleniowa pasja do inżynierii. Nasza wiedza ewoluuje wraz z technologią, ale jedno pozostaje niezmienne: jakość, za którą ręczymy własnym nazwiskiem.",
+                
+                
+                
             },
             en: {
                 "nav-home": "Home",
@@ -589,8 +982,7 @@
                 "about-title": "Craftsmanship passed down in our genes",
                 "about-p1": "We are not just another faceless corporation. We are a family that has been taking care of the safety and warmth in our clients' homes for generations. We know every pipe, every valve, and every tiny legal regulation.",
                 "about-p2": "Our knowledge is not just learned procedures – it's tens of thousands of hours spent with a wrench in hand in boiler rooms, homes, and industrial facilities. We approach your installation with pedantic accuracy, mounting it exactly as we would in our own home. Because trust in our industry is not built with words, but with the tightness of every weld made.",
-                "portfolio-title": "Selected projects",
-                "portfolio-desc": "Where others see a problem, we see a ready solution. See the results of our work."
+                
             },
             de: {
                 "nav-home": "Startseite",
@@ -601,8 +993,7 @@
                 "about-title": "Handwerkskunst in den Genen",
                 "about-p1": "Wir sind nicht nur ein weiterer gesichtsloser Konzern. Wir sind eine Familie, die sich seit Generationen um die Sicherheit und Wärme in den Häusern unserer Kunden kümmert. Wir kennen jedes Rohr, jedes Ventil und jede kleinste rechtliche Vorschrift.",
                 "about-p2": "Unser Wissen besteht nicht nur aus erlernten Verfahren – es sind Zehntausende von Stunden, die wir mit einem Schraubenschlüssel in der Hand in Heizungsräumen, Häusern und Industrieanlagen verbracht haben. Wir gehen mit pedantischer Genauigkeit an Ihre Installation heran und montieren sie genau so, wie wir es bei uns zu Hause tun würden. Denn Vertrauen in unserer Branche wird nicht mit Worten aufgebaut, sondern mit der Dichtheit jeder ausgeführten Schweißnaht.",
-                "portfolio-title": "Ausgewählte Projekte",
-                "portfolio-desc": "Wo andere ein Problem sehen, sehen wir eine fertige Lösung. Sehen Sie die Ergebnisse unserer Arbeit."
+      
             }
         };
 
@@ -648,6 +1039,9 @@ navElements.forEach(element => {
         navbar.classList.remove('active');
     });
 });
+
+// 5. Automatyczny rok w stopce
+document.getElementById('current-year').textContent = new Date().getFullYear();
     </script>
 
 </body>
