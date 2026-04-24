@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realizacje | Instal-Serwis</title>
+    <link rel="icon" type="image/svg+xml" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/logo.webp">
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/logo.webp">
+    <meta name="theme-color" content="#05070d">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* BAZOWE ZMIENNE I STYLE Z INDEX.HTML */
+        :root {
+            --bg-deep: #05070d; 
+            --text-light: #e6ebf1; 
+            --text-muted: #8d9bb0;
+            --s8-blue-1: #2bc0e4; 
+            --s8-blue-2: #1e5799; 
+            --gradient-accent: linear-gradient(135deg, var(--s8-blue-1) 0%, var(--s8-blue-2) 100%);
+            --s8-red-1: #e02f44; 
+            --s8-red-2: #8a1523; 
+            --gradient-accent-red: linear-gradient(135deg, var(--s8-red-1) 0%, var(--s8-red-2) 100%);
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); color: var(--text-light); overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* NAVBAR */
+        .nav-wrapper { position: fixed; top: 0; right: 0; width: 77vw; height: 55px; z-index: 1000; transition: 0.3s; }
+        .nav-inner { position: absolute; inset: 0; background: transparent; clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); display: flex; align-items: center; justify-content: end; padding: 0 40px; transition: 0.5s; }
+        .nav-border { opacity: 0; transition: 0.5s; }
+        .nav-wrapper.beyond .nav-border { position: absolute; inset: 0; background: var(--gradient-accent); clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); transform: translateY(2px) translateX(-3px); opacity: 1; }
+        .nav-wrapper.beyond .nav-inner { background: rgba(5, 7, 13, 0.85); backdrop-filter: blur(12px); }
+        .nav-inner a { color: var(--text-light); text-decoration: none; margin-right: 30px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-inner a:hover { color: var(--s8-blue-1); }
+
+        .lang-switcher { display: flex; gap: 8px; margin-right: 20px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); padding: 6px 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%); }
+        .lang-btn:hover, .lang-btn.active { background: var(--gradient-accent); color: #fff; border-color: transparent; }
+
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; cursor: pointer; position: absolute; top: 15px; right: 25px; z-index: 1001; }
+        .hamburger span { width: 100%; height: 4px; background: var(--gradient-accent); border-radius: 0; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .hamburger span:nth-child(1) { clip-path: polygon(0 0, 100% 0, 92% 100%, 5% 100%); }
+        .hamburger span:nth-child(2) { clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); width: 80%; align-self: flex-end; }
+        .hamburger span:nth-child(3) { clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%); }
+        .hamburger:hover span:nth-child(1), .hamburger:hover span:nth-child(2), .hamburger:hover span:nth-child(3), .hamburger.active:hover span { background: var(--gradient-accent-red); width: 100%; }
+
+        /* SUB-HERO */
+        .sub-hero { position: relative; height: 45vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 50px; }
+        .sub-hero-bg { position: absolute; inset: 0; background: url('https://picsum.photos/id/1076/1920/1080') center/cover; filter: blur(5px) brightness(0.3); z-index: 1; }
+        .sub-hero-content { position: relative; z-index: 2; padding: 0 20px; }
+        .sub-hero-content h1 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0 0 15px 0; font-weight: 700; letter-spacing: 2px; color: var(--s8-blue-1); }
+        .sub-hero-content p { font-size: 1.1rem; max-width: 600px; margin: 0 auto; color: var(--text-light); line-height: 1.6; }
+
+        /* =========================================
+           SYSTEM WYBORU REALIZACJI
+           ========================================= */
+        .portfolio-layout { max-width: 1400px; margin: 0 auto; padding: 60px 20px 100px 20px; display: flex; flex-direction: column; gap: 50px; }
+
+        /* Dynamiczny Dropdown */
+        .dropdown-container { position: relative; width: 100%; max-width: 600px; margin: 0 auto; z-index: 50; }
+        
+        .dropdown-btn { width: 100%; padding: 20px 30px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(43, 192, 228, 0.3); color: var(--text-light); font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 600; text-transform: uppercase; cursor: pointer; display: flex; justify-content: space-between; align-items: center; clip-path: polygon(3% 0, 100% 0, 97% 100%, 0 100%); transition: all 0.3s; }
+        .dropdown-btn:hover { background: rgba(43, 192, 228, 0.1); }
+        .dropdown-btn .arrow { transition: transform 0.3s; }
+        .dropdown-container.open .dropdown-btn .arrow { transform: rotate(180deg); }
+
+        .dropdown-panel { position: absolute; top: 110%; left: 0; width: 100%; background: #080b14; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 20px 40px rgba(0,0,0,0.8); }
+        .dropdown-container.open .dropdown-panel { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .search-box { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .search-box input { width: 100%; box-sizing: border-box; background: rgba(255,255,255,0.05); border: none; padding: 12px 20px; color: #fff; font-family: 'Montserrat', sans-serif; outline: none; border-radius: 2px; }
+        .search-box input:focus { background: rgba(255,255,255,0.1); }
+
+        .project-list { max-height: 300px; overflow-y: auto; list-style: none; margin: 0; padding: 0; }
+        /* Styl scrollbara */
+        .project-list::-webkit-scrollbar { width: 6px; }
+        .project-list::-webkit-scrollbar-track { background: transparent; }
+        .project-list::-webkit-scrollbar-thumb { background: var(--s8-blue-2); border-radius: 10px; }
+
+        .project-item { padding: 15px 25px; cursor: pointer; transition: 0.2s; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; border-left: 3px solid transparent; }
+        .project-item:hover { background: rgba(43, 192, 228, 0.05); color: #fff; border-left-color: var(--s8-blue-1); }
+        .project-item.active { background: rgba(43, 192, 228, 0.1); color: var(--s8-blue-1); border-left-color: var(--s8-blue-1); }
+
+        /* =========================================
+           DYNAMICZNA TREŚĆ
+           ========================================= */
+        .project-content { opacity: 1; transition: opacity 0.4s; }
+        .project-content.fade { opacity: 0; }
+
+        .project-header { text-align: center; margin-bottom: 40px; }
+        .project-header h2 { font-size: 2.5rem; color: var(--text-light); margin-bottom: 15px; }
+        .project-header p { font-size: 1.1rem; color: var(--text-muted); max-width: 800px; margin: 0 auto; line-height: 1.8; }
+
+        /* =========================================
+           KARUZELA ANGULAR OVERLAP (Kanciasta z Ramką)
+           ========================================= */
+        .angular-carousel { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            padding: 60px 0;
+            overflow-x: auto; 
+            overflow-y: hidden;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .angular-carousel::-webkit-scrollbar { display: none; }
+
+        .angular-frame {
+            flex-shrink: 0;
+            width: 320px;
+            height: 420px;
+            margin-left: -120px;
+            background: var(--gradient-accent);
+            padding: 4px; 
+            clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%);
+            position: relative;
+            cursor: pointer;
+            z-index: 1;
+            box-shadow: -15px 0 30px rgba(0,0,0,0.8);
+        }
+
+        .angular-frame:first-child { margin-left: 0; }
+
+        .angular-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            clip-path: polygon(14.5% 0, 100% 0, 85.5% 100%, 0 100%);
+            /* USUNIĘTO GRAYSCALE I HOVER */
+        }
+
+
+        /* =========================================
+           LIGHTBOX (Pełny ekran po kliknięciu)
+           ========================================= */
+        .lightbox { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.3s; }
+        .lightbox.active { opacity: 1; visibility: visible; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; box-shadow: 0 0 50px rgba(43, 192, 228, 0.3); }
+        .lightbox-close { position: absolute; top: 30px; right: 40px; color: #fff; font-size: 2.5rem; cursor: pointer; transition: 0.3s; }
+        .lightbox-close:hover { color: var(--s8-blue-1); transform: rotate(90deg); }
+
+        /* STOPKA */
+        .site-footer { background-color: #030408; position: relative; padding-top: 70px; border-top: 1px solid rgba(255,255,255,0.02); }
+        .footer-top-accent { position: absolute; top: -2px; left: 0; width: 100%; height: 2px; background: var(--gradient-accent); }
+        .footer-container { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 40px 50px 40px; gap: 40px; }
+        .footer-col { flex: 1; min-width: 250px; }
+        .footer-brand { font-size: 1.8rem; color: var(--text-light); margin: 0 0 15px 0; font-weight: 700; }
+        .footer-col h4 { color: var(--s8-blue-1); font-size: 1.1rem; margin: 0 0 20px 0; text-transform: uppercase; }
+        .footer-text, .footer-list li { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .footer-list { list-style: none; padding: 0; margin: 0; }
+        .footer-list li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+        .accent-icon { color: var(--s8-blue-1); font-weight: bold; font-size: 1.1rem; }
+        .footer-bottom { text-align: center; padding: 20px; background-color: #010103; color: rgba(141, 155, 176, 0.5); font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* MOBILE RWD */
+        @media (max-width: 800px) {
+/* 1. Stan początkowy: Przezroczyste i ukryte na Hero */
+            .nav-wrapper {
+                width: 15vw;
+                height: 55px;
+                transition: 0.3s;
+            }
+            .nav-inner {
+                position: absolute; inset: 0;
+                background: transparent; /* Przezroczyste na Hero */
+                backdrop-filter: none;
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0 40px;
+                transition: 0.5s;
+            }
+            .nav-border { opacity: 0; transition: 0.5s; }
+
+            .nav-inner a { display: none; padding-top: 25%; }
+            .lang-switcher { padding-bottom: 25%; padding-top: 25%; display: none; gap: 8px; margin-right: 30px; }
+            .lang-btn { display: none; }
+
+            /* 2. Zjechanie w dół (.beyond) - Pojawia się tło i gradientowa krawędź */
+             .nav-inner {
+                background: rgba(5, 7, 13, 0.85);
+                backdrop-filter: blur(12px);
+            }
+            .nav-border {
+                position: absolute; inset: 0;
+                background: var(--gradient-accent);
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                transform: translateY(2px) translateX(-3px);
+                opacity: 1;
+            }
+
+            /* 3. Rozwinięte menu (.active) - Otwiera się na 95vw 90vh */
+            .nav-wrapper.active {
+                width: 95vw; 
+                height: 90vh;
+            }
+            .nav-wrapper.active .nav-inner {
+                background: rgba(5, 7, 13, 0.95); /* Trochę ciemniejsze dla czytelności */
+                backdrop-filter: blur(12px);
+            }
+            .nav-wrapper.active .nav-inner a,
+            .nav-wrapper.active .lang-switcher, 
+            .nav-wrapper.active .lang-btn {
+                display: flex;
+            }
+
+            /* 4. Hamburger */
+            .hamburger { display: flex; z-index: 2000; right: 25px; top: 15px; }
+            .hamburger.active span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
+
+            /* RWD Realizacje */
+            .portfolio-layout { padding: 40px 20px; gap: 40px; }
+            .project-header h2 { font-size: 1.8rem; }
+            .dropdown-btn { font-size: 0.9rem; padding: 15px 20px; clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);}
+            
+            /* USUNIĘCIE NAKŁADANIA - PIONOWY UKŁAD DLA MOBILE */
+            .angular-carousel {
+                flex-direction: column; /* Ustawia elementy jeden pod drugim */
+                gap: 20px; /* Odstęp między zdjęciami */
+                padding: 20px 0;
+            }
+
+            .angular-frame {
+                width: 100%; /* Zajmuje całą szerokość ekranu */
+                max-width: 400px; /* Ograniczenie żeby nie było gigantyczne na tabletach */
+                height: 250px;
+                margin-left: 0; /* Usuwa ujemny margines (nakładanie) */
+                clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); /* Łagodniejsze cięcie dla szerokiego formatu */
+            }
+
+            .angular-img { 
+                clip-path: polygon(4.5% 0, 100% 0, 95.5% 100%, 0 100%); 
+            }
+            
+            .footer-container { flex-direction: column; padding: 0 20px 30px 20px; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-wrapper" id="navbar">
+        <div class="nav-border"></div>
+        <div class="nav-inner">
+            <a href="index.html" class="nav-element" data-i18n="nav-home">Strona Główna</a>
+            <a href="zespol.html" class="nav-element" data-i18n="nav-about">Zespół</a>
+            <a href="realizacje.html" class="nav-element" data-i18n="nav-portfolio">Realizacje</a>
+            <a href="kontakt.html" class="nav-element" data-i18n="nav-contact">Kontakt</a>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active nav-element" data-lang="pl">PL</button>
+                <button class="lang-btn nav-element" data-lang="en">EN</button>
+                <button class="lang-btn nav-element" data-lang="de">DE</button>
+            </div>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <header class="sub-hero" id="hero">
+        <div class="sub-hero-bg"></div>
+        <div class="sub-hero-content">
+            <h1 data-i18n="port-hero-title">Nasze Realizacje</h1>
+            <p data-i18n="port-hero-desc">Nasza praca mówi sama za siebie. Wybierz projekt i sprawdź efekty.</p>
+        </div>
+    </header>
+
+    <section class="portfolio-layout">
+        
+        <div class="dropdown-container" id="project-dropdown">
+            <button class="dropdown-btn" id="dropdown-toggle">
+                <span id="dropdown-label" data-i18n="select-project">Wybierz realizację...</span>
+                <span class="arrow">▼</span>
+            </button>
+            <div class="dropdown-panel">
+                <div class="search-box">
+                    <input type="text" id="project-search" placeholder="Szukaj obiektu lub miasta..." data-i18n-placeholder="search-placeholder">
+                </div>
+                <ul class="project-list" id="project-list-ul">
+                    </ul>
+            </div>
+        </div>
+
+        <div class="project-content" id="project-display" style="display: none;">
+            <div class="project-header">
+                <h2 id="display-title">Tytuł projektu</h2>
+                <p id="display-desc">Opis inżynieryjny projektu...</p>
+            </div>
+            
+            <div class="angular-carousel" id="display-carousel">
+                </div>
+        </div>
+
+    </section>
+
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close" id="lightbox-close">×</span>
+        <img src="" alt="Powiększenie" id="lightbox-img">
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-top-accent"></div>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-brand">Instal-Serwis</h3>
+                <p class="footer-text" data-i18n="footer-motto">Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-contact-title">Kontakt</h4>
+                <ul class="footer-list">
+                    <li><span class="accent-icon">⚲</span> ul. Źródlana 5, 42-470 Siewierz</li>
+                    <li><span class="accent-icon">☏</span> +48 797 181 484</li>
+                    <li><span class="accent-icon">✉</span> biuro@instal-serwis.pl</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-company-title">Dane firmowe</h4>
+                <ul class="footer-list">
+                    <li><strong style="color: var(--text-light);">KOCHLIK ANDRZEJ INSTAL-SERWIS</strong></li>
+                    <li>NIP: 6491366095</li>
+                    <li>REGON: 273253330</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© <span id="current-year"></span> KOCHLIK ANDRZEJ INSTAL-SERWIS. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+<script>
+        // --- 1. NAVBAR & RWD ---
+        const navbar = document.getElementById('navbar');
+        const heroHeight = document.getElementById('hero').offsetHeight;
+        window.addEventListener('scroll', () => { if (window.scrollY > heroHeight - 80) navbar.classList.add('beyond'); else navbar.classList.remove('beyond'); });
+        
+        const hamburger = document.getElementById('hamburger');
+        const navElements = document.querySelectorAll('.nav-element');
+        hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); navbar.classList.toggle('active'); });
+        navElements.forEach(element => { element.addEventListener('click', () => { hamburger.classList.remove('active'); navbar.classList.remove('active'); }); });
+        
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // --- 2. BAZA DANYCH REALIZACJI (Dodawaj w nieskończoność) ---
+        const projectsDatabase = [
+            {
+                id: "p1",
+                title: {
+                    pl: "Zakład Przetwórstwa Spożywczego - Katowice",
+                    en: "Food Processing Plant - Katowice",
+                    de: "Lebensmittelverarbeitungsbetrieb - Kattowitz"
+                },
+                desc: {
+                    pl: "Budowa kompletnej magistrali technologicznej w standardzie higienicznym HACCP/GMP. Realizacja obejmowała zautomatyzowane stacje mycia CIP, układ orurowania ze stali nierdzewnej oraz podłączenie instalacji gazów osłonowych. Brak przestojów w bieżącej produkcji klienta.",
+                    en: "Construction of a complete technological main in the hygienic HACCP/GMP standard. The project included automated CIP washing stations, stainless steel piping, and the connection of shielding gas installations. Zero downtime for the client's ongoing production.",
+                    de: "Bau einer kompletten technologischen Hauptleitung im hygienischen HACCP/GMP-Standard. Das Projekt umfasste automatisierte CIP-Reinigungsstationen, Edelstahlrohrleitungen und den Anschluss von Schutzgasanlagen. Keine Ausfallzeiten für die laufende Produktion des Kunden."
+                },
+                images: [
+                    "https://picsum.photos/id/1015/800/1000",
+                    "https://picsum.photos/id/1016/800/1000",
+                    "https://picsum.photos/id/1018/800/1000",
+                    "https://picsum.photos/id/1019/800/1000",
+                    "https://picsum.photos/id/1020/800/1000"
+                ]
+            },
+            {
+                id: "p2",
+                title: {
+                    pl: "Zbiorniki Kriogeniczne - Laboratorium we Wrocławiu",
+                    en: "Cryogenic Tanks - Laboratory in Wroclaw",
+                    de: "Kryotanks - Labor in Breslau"
+                },
+                desc: {
+                    pl: "Precyzyjne posadowienie i podpięcie rurociągów próżniowych dla zbiorników na ciekły azot. Inwestycja dla sektora medycznego wymagająca pedantycznej szczelności i zaawansowanej kalibracji zaworów bezpieczeństwa.",
+                    en: "Precise foundation and connection of vacuum pipelines for liquid nitrogen tanks. An investment for the medical sector requiring pedantic tightness and advanced calibration of safety valves.",
+                    de: "Präzises Fundament und Anschluss von Vakuumleitungen für flüssige Stickstofftanks. Eine Investition für den medizinischen Sektor, die pedantische Dichtheit und fortschrittliche Kalibrierung von Sicherheitsventilen erfordert."
+                },
+                images: [
+                    "https://picsum.photos/id/1043/800/1000",
+                    "https://picsum.photos/id/1044/800/1000",
+                    "https://picsum.photos/id/1045/800/1000"
+                ]
+            },
+            {
+                id: "p3",
+                title: {
+                    pl: "Magistrala Tlenowa - Szpital Specjalistyczny Warszawa",
+                    en: "Oxygen Main - Specialist Hospital Warsaw",
+                    de: "Sauerstoffhauptleitung - Spezialkrankenhaus Warschau"
+                },
+                desc: {
+                    pl: "Pełen remont i rozbudowa instalacji gazów medycznych. Wykonanie w rygorze sterylności. Zapewniliśmy nowe punkty poboru oraz przeprowadziliśmy generalny serwis stacji zgazowania.",
+                    en: "Full renovation and expansion of the medical gas installation. Executed under strict sterility conditions. We provided new drawing points and carried out a general overhaul of the gasification station.",
+                    de: "Komplette Renovierung und Erweiterung der Anlage für medizinische Gase. Unter strengsten Sterilitätsbedingungen durchgeführt. Wir haben neue Entnahmestellen eingerichtet und die Vergasungsstation generalüberholt."
+                },
+                images: [
+                    "https://picsum.photos/id/1060/800/1000",
+                    "https://picsum.photos/id/1061/800/1000",
+                    "https://picsum.photos/id/1062/800/1000",
+                    "https://picsum.photos/id/1063/800/1000",
+                    "https://picsum.photos/id/1064/800/1000",
+                    "https://picsum.photos/id/1065/800/1000",
+                    "https://picsum.photos/id/1066/800/1000",
+                    "https://picsum.photos/id/1067/800/1000"
+                ]
+            }
+        ];
+
+        let currentProjectIndex = null;
+
+        // --- 3. TŁUMACZENIA INTERFEJSU ---
+        const uiTranslations = {
+            pl: {
+                "nav-home": "Strona Główna", "nav-about": "Zespół", "nav-portfolio": "Realizacje", "nav-contact": "Kontakt",
+                "port-hero-title": "Nasze Realizacje", "port-hero-desc": "Nasza praca mówi sama za siebie. Wybierz projekt i sprawdź efekty.",
+                "select-project": "Wybierz realizację...", "search-placeholder": "Szukaj obiektu lub miasta...",
+                "footer-motto": "Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.",
+                "footer-contact-title": "Kontakt", "footer-company-title": "Dane firmowe"
+            },
+            en: {
+                "nav-home": "Home", "nav-about": "Team", "nav-portfolio": "Projects", "nav-contact": "Contact",
+                "port-hero-title": "Our Projects", "port-hero-desc": "Our work speaks for itself. Select a project below and review the results.",
+                "select-project": "Select a project...", "search-placeholder": "Search facility or city...",
+                "footer-motto": "Tradition in assembly, precision in detail. Setting standards for industrial installations since 2007.",
+                "footer-contact-title": "Contact", "footer-company-title": "Company details"
+            },
+            de: {
+                "nav-home": "Startseite", "nav-about": "Team", "nav-portfolio": "Projekte", "nav-contact": "Kontakt",
+                "port-hero-title": "Unsere Projekte", "port-hero-desc": "Unsere Arbeit spricht für sich. Wählen Sie unten ein Projekt aus und prüfen Sie die Ergebnisse.",
+                "select-project": "Wählen Sie ein Projekt...", "search-placeholder": "Suchen Sie eine Einrichtung oder Stadt...",
+                "footer-motto": "Tradition in der Montage, Präzision im Detail. Wir setzen Maßstäbe für Industrieanlagen seit 2007.",
+                "footer-contact-title": "Kontakt", "footer-company-title": "Firmendetails"
+            }
+        };
+
+        // --- INTELIGENTNA OBSŁUGA JĘZYKA (PAMIĘĆ BROWSERA) ---
+        const langButtons = document.querySelectorAll('.lang-btn');
+
+        // Sprawdzamy, czy użytkownik ma już zapisany język. Jeśli nie, domyślnie ładujemy 'pl'
+        let currentLang = localStorage.getItem('instalSerwisLang') || 'pl';
+
+        function applyLanguage(lang) {
+            localStorage.setItem('instalSerwisLang', lang);
+            currentLang = lang;
+
+            langButtons.forEach(b => {
+                if (b.getAttribute('data-lang') === lang) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const dict = typeof translations !== 'undefined' ? translations : (typeof uiTranslations !== 'undefined' ? uiTranslations : null);
+                
+                if (dict && dict[lang] && dict[lang][key]) {
+                    if (el.id === 'dropdown-label' && typeof currentProjectIndex !== 'undefined' && currentProjectIndex !== null) return;
+                    el.textContent = dict[lang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const dict = typeof translations !== 'undefined' ? translations : (typeof uiTranslations !== 'undefined' ? uiTranslations : null);
+                
+                if (dict && dict[lang] && dict[lang][key]) {
+                    el.placeholder = dict[lang][key];
+                }
+            });
+
+            if (typeof renderProjectList === 'function') {
+                const searchInput = document.getElementById('project-search');
+                renderProjectList(searchInput ? searchInput.value : "");
+                
+                if (typeof currentProjectIndex !== 'undefined' && currentProjectIndex !== null) {
+                    const proj = projectsDatabase[currentProjectIndex];
+                    const ddLabel = document.getElementById('dropdown-label');
+                    const dTitle = document.getElementById('display-title');
+                    const dDesc = document.getElementById('display-desc');
+                    
+                    if(ddLabel) ddLabel.textContent = proj.title[lang];
+                    if(dTitle) dTitle.textContent = proj.title[lang];
+                    if(dDesc) dDesc.textContent = proj.desc[lang];
+                }
+            }
+        }
+
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                applyLanguage(btn.getAttribute('data-lang'));
+            });
+        });
+
+        // Inicjalizacja języka z pamięci przy starcie strony
+        applyLanguage(currentLang);
+
+        // --- 4. LOGIKA DROPDOWNA I WYSZUKIWARKI ---
+        const dropdownContainer = document.getElementById('project-dropdown');
+        const dropdownToggle = document.getElementById('dropdown-toggle');
+        const projectListUl = document.getElementById('project-list-ul');
+        const searchInput = document.getElementById('project-search');
+        
+        dropdownToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownContainer.classList.toggle('open');
+            if(dropdownContainer.classList.contains('open')) searchInput.focus();
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!dropdownContainer.contains(e.target)) dropdownContainer.classList.remove('open');
+        });
+
+        function renderProjectList(filterText = "") {
+            projectListUl.innerHTML = '';
+            projectsDatabase.forEach((proj, index) => {
+                const title = proj.title[currentLang];
+                if (title.toLowerCase().includes(filterText.toLowerCase())) {
+                    const li = document.createElement('li');
+                    li.className = 'project-item';
+                    if (currentProjectIndex === index) li.classList.add('active');
+                    li.textContent = title;
+                    
+                    li.addEventListener('click', () => {
+                        loadProject(index);
+                        dropdownContainer.classList.remove('open');
+                        document.getElementById('dropdown-label').textContent = title;
+                        document.querySelectorAll('.project-item').forEach(el => el.classList.remove('active'));
+                        li.classList.add('active');
+                    });
+                    
+                    projectListUl.appendChild(li);
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', (e) => renderProjectList(e.target.value));
+
+        // --- 5. LADOWANIE ZAWARTOŚCI PROJEKTU ---
+        const projectDisplay = document.getElementById('project-display');
+        const displayTitle = document.getElementById('display-title');
+        const displayDesc = document.getElementById('display-desc');
+        const displayCarousel = document.getElementById('display-carousel');
+
+        function loadProject(index) {
+            currentProjectIndex = index;
+            const proj = projectsDatabase[index];
+            
+            projectDisplay.classList.add('fade');
+            
+            setTimeout(() => {
+                displayTitle.textContent = proj.title[currentLang];
+                displayDesc.textContent = proj.desc[currentLang];
+                
+                displayCarousel.innerHTML = '';
+                proj.images.forEach(imgSrc => {
+                    const frame = document.createElement('div');
+                    frame.className = 'angular-frame';
+                    const img = document.createElement('img');
+                    img.className = 'angular-img';
+                    img.src = imgSrc;
+                    img.alt = "Zdjecie z realizacji";
+                    
+                    frame.addEventListener('click', () => openLightbox(imgSrc));
+
+                    frame.appendChild(img);
+                    displayCarousel.appendChild(frame);
+                });
+
+                projectDisplay.style.display = 'block';
+                setTimeout(() => projectDisplay.classList.remove('fade'), 50);
+            }, 400); 
+        }
+
+        // --- 6. LIGHTBOX ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+        lightboxClose.addEventListener('click', () => lightbox.classList.remove('active'));
+        lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('active'); });
+
+        // Inicjalizacja pierwszej listy i załadowanie domyślnego projektu
+        renderProjectList();
+        
+        // ŁADUJE PIERWSZY PROJEKT Z BAZY (index 0) JAKO DOMYŚLNY
+        window.addEventListener('DOMContentLoaded', () => {
+            if (projectsDatabase.length > 0) {
+                loadProject(0);
+                document.getElementById('dropdown-label').textContent = projectsDatabase[0].title[currentLang];
+            }
+        });
+    </script>
+</body>
+</html>

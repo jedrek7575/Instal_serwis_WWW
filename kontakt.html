@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt | Instal-Serwis</title>
+    <link rel="icon" type="image/svg+xml" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/logo.webp">
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/logo.webp">
+    <meta name="theme-color" content="#05070d">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* BAZOWE ZMIENNE I STYLE Z INDEX.HTML */
+        :root {
+            --bg-deep: #05070d; 
+            --text-light: #e6ebf1; 
+            --text-muted: #8d9bb0;
+            --s8-blue-1: #2bc0e4; 
+            --s8-blue-2: #1e5799; 
+            --gradient-accent: linear-gradient(135deg, var(--s8-blue-1) 0%, var(--s8-blue-2) 100%);
+            --s8-red-1: #e02f44; 
+            --s8-red-2: #8a1523; 
+            --gradient-accent-red: linear-gradient(135deg, var(--s8-red-1) 0%, var(--s8-red-2) 100%);
+        }
+
+        body, html { margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; background-color: var(--bg-deep); color: var(--text-light); overflow-x: hidden; scroll-behavior: smooth; }
+
+        /* NAVBAR */
+        .nav-wrapper { position: fixed; top: 0; right: 0; width: 77vw; height: 55px; z-index: 1000; transition: 0.3s; }
+        .nav-inner { position: absolute; inset: 0; background: transparent; clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); display: flex; align-items: center; justify-content: end; padding: 0 40px; transition: 0.5s; }
+        .nav-border { opacity: 0; transition: 0.5s; }
+        .nav-wrapper.beyond .nav-border { position: absolute; inset: 0; background: var(--gradient-accent); clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); transform: translateY(2px) translateX(-3px); opacity: 1; }
+        .nav-wrapper.beyond .nav-inner { background: rgba(5, 7, 13, 0.85); backdrop-filter: blur(12px); }
+        .nav-inner a { color: var(--text-light); text-decoration: none; margin-right: 30px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-inner a:hover { color: var(--s8-blue-1); }
+
+        .lang-switcher { display: flex; gap: 8px; margin-right: 20px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); padding: 6px 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%); }
+        .lang-btn:hover, .lang-btn.active { background: var(--gradient-accent); color: #fff; border-color: transparent; }
+
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; cursor: pointer; position: absolute; top: 15px; right: 25px; z-index: 1001; }
+        .hamburger span { width: 100%; height: 4px; background: var(--gradient-accent); border-radius: 0; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .hamburger span:nth-child(1) { clip-path: polygon(0 0, 100% 0, 92% 100%, 5% 100%); }
+        .hamburger span:nth-child(2) { clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); width: 80%; align-self: flex-end; }
+        .hamburger span:nth-child(3) { clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%); }
+        .hamburger:hover span:nth-child(1), .hamburger:hover span:nth-child(2), .hamburger:hover span:nth-child(3), .hamburger.active:hover span { background: var(--gradient-accent-red); width: 100%; }
+
+        /* SUB-HERO */
+        .sub-hero { position: relative; height: 45vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 50px; }
+        .sub-hero-bg { position: absolute; inset: 0; background: url('https://picsum.photos/id/1076/1920/1080') center/cover; filter: blur(5px) brightness(0.3); z-index: 1; }
+        .sub-hero-content { position: relative; z-index: 2; padding: 0 20px; }
+        .sub-hero-content h1 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0 0 15px 0; font-weight: 700; letter-spacing: 2px; color: var(--s8-blue-1); }
+        .sub-hero-content p { font-size: 1.1rem; max-width: 600px; margin: 0 auto; color: var(--text-light); line-height: 1.6; }
+
+        /* =========================================
+           SEKCJA KONTAKTOWA
+           ========================================= */
+        .contact-layout { display: flex; max-width: 1400px; margin: 0 auto; padding: 100px 20px; gap: 60px; align-items: stretch; padding-left: 5%; }
+        
+        .contact-left { flex: 1; max-width: 500px; }
+        .contact-left h2 { font-size: 2.2rem; color: var(--text-light); margin-bottom: 30px; position: relative; display: inline-block; }
+        .contact-left h2::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 60%; height: 3px; background: var(--gradient-accent); clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%); }
+        
+        .big-phone { display: block; font-size: 2.5rem; font-weight: 700; color: var(--s8-blue-1); text-decoration: none; margin-bottom: 10px; transition: 0.3s; }
+        .big-phone:hover { color: #fff; }
+        .address-text { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 40px; line-height: 1.6; }
+
+        /* Formularz */
+        .contact-form { display: flex; flex-direction: column; gap: 20px; }
+        .form-group { position: relative; }
+        .form-input { width: 100%; box-sizing: border-box; background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1); padding: 15px 20px; color: var(--text-light); font-family: 'Montserrat', sans-serif; font-size: 1rem; border-radius: 2px; outline: none; transition: 0.3s; }
+        .form-input:focus { border-color: var(--s8-blue-1); background: rgba(255, 255, 255, 0.05); }
+        textarea.form-input { resize: vertical; min-height: 120px; }
+
+        .btn-submit { background: transparent; border: none; cursor: pointer; position: relative; display: inline-flex; align-items: center; justify-content: center; padding: 16px 45px; color: var(--text-light); font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; background: rgba(255, 255, 255, 0.04); clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); overflow: hidden; align-self: flex-start; }
+        .btn-submit::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: var(--gradient-accent); transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1); z-index: -1; }
+        .btn-submit:hover { color: #fff; transform: translateX(5px); }
+        .btn-submit:hover::before { left: 0; }
+        
+        /* RAMKA Z MAPĄ */
+        .contact-right { flex: 1.5; display: flex; align-items: stretch; }
+        
+        .map-frame-wrapper { 
+            width: 100%; 
+            position: relative;
+            background: var(--gradient-accent); 
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+            padding: 4px;
+            min-height: 400px;
+        }
+        
+        .map-frame-inner {
+            width: 100%; height: 100%;
+            background: var(--bg-deep);
+            clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%);
+            position: relative;
+        }
+
+        .map-frame-inner iframe {
+            width: 100%; height: 100%;
+            border: none;
+            clip-path: polygon(4.8% 0, 100% 0, 95.2% 100%, 0 100%);
+            filter: grayscale(80%) contrast(1.1) brightness(0.8);
+            transition: 0.4s;
+        }
+
+        .map-frame-inner iframe:hover { filter: grayscale(0%) contrast(1) brightness(1); }
+
+        /* STOPKA */
+        .site-footer { background-color: #030408; position: relative; padding-top: 70px; border-top: 1px solid rgba(255,255,255,0.02); }
+        .footer-top-accent { position: absolute; top: -2px; left: 0; width: 100%; height: 2px; background: var(--gradient-accent); }
+        .footer-container { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 40px 50px 40px; gap: 40px; }
+        .footer-col { flex: 1; min-width: 250px; }
+        .footer-brand { font-size: 1.8rem; color: var(--text-light); margin: 0 0 15px 0; font-weight: 700; }
+        .footer-col h4 { color: var(--s8-blue-1); font-size: 1.1rem; margin: 0 0 20px 0; text-transform: uppercase; }
+        .footer-text, .footer-list li { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .footer-list { list-style: none; padding: 0; margin: 0; }
+        .footer-list li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+        .accent-icon { color: var(--s8-blue-1); font-weight: bold; font-size: 1.1rem; }
+        .footer-bottom { text-align: center; padding: 20px; background-color: #010103; color: rgba(141, 155, 176, 0.5); font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* MOBILE RWD */
+        @media (max-width: 800px) {
+/* 1. Stan początkowy: Przezroczyste i ukryte na Hero */
+            .nav-wrapper {
+                width: 15vw;
+                height: 55px;
+                transition: 0.3s;
+            }
+            .nav-inner {
+                position: absolute; inset: 0;
+                background: transparent; /* Przezroczyste na Hero */
+                backdrop-filter: none;
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0 40px;
+                transition: 0.5s;
+            }
+            .nav-border { opacity: 0; transition: 0.5s; }
+
+            .nav-inner a { display: none; padding-top: 25%; }
+            .lang-switcher { padding-bottom: 25%; padding-top: 25%; display: none; gap: 8px; margin-right: 30px; }
+            .lang-btn { display: none; }
+
+            /* 2. Zjechanie w dół (.beyond) - Pojawia się tło i gradientowa krawędź */
+             .nav-inner {
+                background: rgba(5, 7, 13, 0.85);
+                backdrop-filter: blur(12px);
+            }
+            .nav-border {
+                position: absolute; inset: 0;
+                background: var(--gradient-accent);
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                transform: translateY(2px) translateX(-3px);
+                opacity: 1;
+            }
+
+            /* 3. Rozwinięte menu (.active) - Otwiera się na 95vw 90vh */
+            .nav-wrapper.active {
+                width: 95vw; 
+                height: 90vh;
+            }
+            .nav-wrapper.active .nav-inner {
+                background: rgba(5, 7, 13, 0.95); /* Trochę ciemniejsze dla czytelności */
+                backdrop-filter: blur(12px);
+            }
+            .nav-wrapper.active .nav-inner a,
+            .nav-wrapper.active .lang-switcher, 
+            .nav-wrapper.active .lang-btn {
+                display: flex;
+            }
+
+            /* 4. Hamburger */
+            .hamburger { display: flex; z-index: 2000; right: 25px; top: 15px; }
+            .hamburger.active span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
+
+            /* RWD Kontaktu */
+            .contact-layout { flex-direction: column; padding: 60px 20px; }
+            .map-frame-wrapper { clip-path: none; min-height: 350px; padding: 3px 0; } 
+            .map-frame-inner, .map-frame-inner iframe { clip-path: none; }
+            .big-phone { font-size: 2rem; }
+            .footer-container { flex-direction: column; padding: 0 20px 30px 20px; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-wrapper" id="navbar">
+        <div class="nav-border"></div>
+        <div class="nav-inner">
+            <a href="index.html" class="nav-element" data-i18n="nav-home">Strona Główna</a>
+            <a href="zespol.html" class="nav-element" data-i18n="nav-about">Zespół</a>
+            <a href="realizacje.html" class="nav-element" data-i18n="nav-portfolio">Realizacje</a>
+            <a href="kontakt.html" class="nav-element" data-i18n="nav-contact">Kontakt</a>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active nav-element" data-lang="pl">PL</button>
+                <button class="lang-btn nav-element" data-lang="en">EN</button>
+                <button class="lang-btn nav-element" data-lang="de">DE</button>
+            </div>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <header class="sub-hero" id="hero">
+        <div class="sub-hero-bg"></div>
+        <div class="sub-hero-content">
+            <h1 data-i18n="contact-hero-title">Bezpośredni Kontakt</h1>
+            <p data-i18n="contact-hero-desc">Zadzwoń lub napisz. Bez korporacyjnej centrali, prosto do inżynierów odpowiedzialnych za realizacje.</p>
+        </div>
+    </header>
+
+    <section class="contact-layout">
+        <div class="contact-left">
+            <h2 data-i18n="contact-title">Skontaktuj się z nami</h2>
+            
+            <a href="tel:+48797181484" class="big-phone">+48 797 181 484</a>
+            <p class="address-text">
+                <strong>Instal-Serwis Andrzej Kochlik</strong><br>
+                ul. Źródlana 5<br>
+                42-470 Siewierz
+            </p>
+
+            <form id="resend-contact-form" class="contact-form">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" class="form-input" placeholder="Twoje imię / nazwa firmy" data-i18n-placeholder="form-name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Twój adres e-mail" data-i18n-placeholder="form-email" required>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" name="message" class="form-input" placeholder="Jakiej instalacji potrzebujesz?" data-i18n-placeholder="form-msg" required></textarea>
+                </div>
+                <button type="submit" class="btn-submit">
+                    <span data-i18n="btn-send">Wyślij Wiadomość</span>
+                </button>
+                <div id="form-status" style="margin-top: 10px; font-size: 0.9rem; color: var(--s8-blue-1); display: none;"></div>
+            </form>
+        </div>
+
+        <div class="contact-right">
+            <div class="map-frame-wrapper">
+                <div class="map-frame-inner">
+                    <iframe src="https://maps.google.com/maps?q=Siewierz,%20%C5%B9r%C3%B3dlana%205&t=&z=15&ie=UTF8&iwloc=&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-top-accent"></div>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-brand">Instal-Serwis</h3>
+                <p class="footer-text" data-i18n="footer-motto">Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-contact-title">Kontakt</h4>
+                <ul class="footer-list">
+                    <li><span class="accent-icon">⚲</span> ul. Źródlana 5, 42-470 Siewierz</li>
+                    <li><span class="accent-icon">☏</span> +48 797 181 484</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-company-title">Dane firmowe</h4>
+                <ul class="footer-list">
+                    <li><strong style="color: var(--text-light);">KOCHLIK ANDRZEJ INSTAL-SERWIS</strong></li>
+                    <li>NIP: 6491366095</li>
+                    <li>REGON: 273253330</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year"></span> KOCHLIK ANDRZEJ INSTAL-SERWIS. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Logika Navbara
+        const navbar = document.getElementById('navbar');
+        const heroHeight = document.getElementById('hero').offsetHeight;
+        window.addEventListener('scroll', () => { if (window.scrollY > heroHeight - 80) navbar.classList.add('beyond'); else navbar.classList.remove('beyond'); });
+
+        // Hamburger Menu
+        const hamburger = document.getElementById('hamburger');
+        const navElements = document.querySelectorAll('.nav-element');
+        hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); navbar.classList.toggle('active'); });
+        navElements.forEach(element => { element.addEventListener('click', () => { hamburger.classList.remove('active'); navbar.classList.remove('active'); }); });
+
+        // Rok w stopce
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // TŁUMACZENIA KONTAKT
+        const translations = {
+            pl: {
+                "nav-home": "Strona Główna", "nav-about": "Zespół", "nav-portfolio": "Realizacje", "nav-contact": "Kontakt",
+                "contact-hero-title": "Bezpośredni Kontakt",
+                "contact-hero-desc": "Zadzwoń lub napisz. Bez korporacyjnej centrali, prosto do inżynierów odpowiedzialnych za realizacje.",
+                "contact-title": "Skontaktuj się z nami",
+                "btn-send": "Wyślij Wiadomość",
+                "form-name": "Twoje imię / nazwa firmy",
+                "form-email": "Twój adres e-mail",
+                "form-msg": "Jakiej instalacji potrzebujesz?",
+                "footer-motto": "Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.",
+                "footer-contact-title": "Kontakt", "footer-company-title": "Dane firmowe"
+            },
+            en: {
+                "nav-home": "Home", "nav-about": "Team", "nav-portfolio": "Projects", "nav-contact": "Contact",
+                "contact-hero-title": "Direct Contact",
+                "contact-hero-desc": "Call or write. No corporate switchboard, straight to the engineers responsible for the projects.",
+                "contact-title": "Get in touch",
+                "btn-send": "Send Message",
+                "form-name": "Your name / company name",
+                "form-email": "Your e-mail address",
+                "form-msg": "What kind of installation do you need?",
+                "footer-motto": "Tradition in assembly, precision in detail. Setting standards for industrial installations since 2007.",
+                "footer-contact-title": "Contact", "footer-company-title": "Company details"
+            },
+            de: {
+                "nav-home": "Startseite", "nav-about": "Team", "nav-portfolio": "Projekte", "nav-contact": "Kontakt",
+                "contact-hero-title": "Direkter Kontakt",
+                "contact-hero-desc": "Rufen Sie an oder schreiben Sie uns. Keine Unternehmenszentrale, direkt zu den für die Projekte verantwortlichen Ingenieuren.",
+                "contact-title": "Kontaktieren Sie uns",
+                "btn-send": "Nachricht Senden",
+                "form-name": "Ihr Name / Firmenname",
+                "form-email": "Ihre E-Mail-Adresse",
+                "form-msg": "Welche Art von Installation benötigen Sie?",
+                "footer-motto": "Tradition in der Montage, Präzision im Detail. Wir setzen Maßstäbe für Industrieanlagen seit 2007.",
+                "footer-contact-title": "Kontakt", "footer-company-title": "Firmendetails"
+            }
+        };
+
+// --- INTELIGENTNA OBSŁUGA JĘZYKA (PAMIĘĆ BROWSERA) ---
+const langButtons = document.querySelectorAll('.lang-btn');
+
+// 1. Sprawdzamy, czy użytkownik ma już zapisany język. Jeśli nie, domyślnie ładujemy 'pl'
+let currentLang = localStorage.getItem('instalSerwisLang') || 'pl';
+
+// 2. Główna funkcja aplikująca język
+function applyLanguage(lang) {
+    // Zapisujemy wybór w pamięci przeglądarki!
+    localStorage.setItem('instalSerwisLang', lang);
+    currentLang = lang;
+
+    // Aktualizacja podświetlenia guzików
+    langButtons.forEach(b => {
+        if (b.getAttribute('data-lang') === lang) b.classList.add('active');
+        else b.classList.remove('active');
+    });
+
+    // Tłumaczenie statycznych tekstów na stronie
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        // Zabezpieczamy się, używamy translations (na innych podstronach) lub uiTranslations (w realizacjach)
+        const dict = typeof translations !== 'undefined' ? translations : (typeof uiTranslations !== 'undefined' ? uiTranslations : null);
+        
+        if (dict && dict[lang] && dict[lang][key]) {
+            // Zabezpieczenie dla pliku realizacje.html (aby nie zresetować nazwy wybranego projektu w dropdownie)
+            if (el.id === 'dropdown-label' && typeof currentProjectIndex !== 'undefined' && currentProjectIndex !== null) return;
+            el.textContent = dict[lang][key];
+        }
+    });
+
+    // Tłumaczenie placeholderów (w formularzach kontaktowych i szukajce)
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        const dict = typeof translations !== 'undefined' ? translations : (typeof uiTranslations !== 'undefined' ? uiTranslations : null);
+        
+        if (dict && dict[lang] && dict[lang][key]) {
+            el.placeholder = dict[lang][key];
+        }
+    });
+
+    // Specjalne akcje TYLKO dla pliku realizacje.html (przeładowanie bazy danych i karuzeli)
+    if (typeof renderProjectList === 'function') {
+        const searchInput = document.getElementById('project-search');
+        renderProjectList(searchInput ? searchInput.value : "");
+        
+        if (typeof currentProjectIndex !== 'undefined' && currentProjectIndex !== null) {
+            const proj = projectsDatabase[currentProjectIndex];
+            const ddLabel = document.getElementById('dropdown-label');
+            const dTitle = document.getElementById('display-title');
+            const dDesc = document.getElementById('display-desc');
+            
+            if(ddLabel) ddLabel.textContent = proj.title[lang];
+            if(dTitle) dTitle.textContent = proj.title[lang];
+            if(dDesc) dDesc.textContent = proj.desc[lang];
+        }
+    }
+}
+
+// 3. Podpinamy akcję kliknięcia pod guziki
+langButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        applyLanguage(btn.getAttribute('data-lang'));
+    });
+});
+
+// 4. Inicjalizacja języka z pamięci przy starcie strony
+applyLanguage(currentLang);
+
+        // LOGIKA FORMULARZA KONTAKTOWEGO (Przygotowana pod Resend API / Fetch)
+        const contactForm = document.getElementById('resend-contact-form');
+        const formStatus = document.getElementById('form-status');
+
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault(); // Blokujemy standardowe przeładowanie strony!
+            
+            formStatus.style.display = 'block';
+            formStatus.style.color = "var(--text-muted)";
+            
+            // Komunikaty ładowania w aktualnie wybranym języku
+            const loadingMsgs = { pl: "Wysyłanie wiadomości...", en: "Sending message...", de: "Nachricht wird gesendet..." };
+            const successMsgs = { pl: "Wiadomość wysłana pomyślnie!", en: "Message sent successfully!", de: "Nachricht erfolgreich gesendet!" };
+            
+            const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
+            formStatus.textContent = loadingMsgs[currentLang];
+
+            // Symulacja wysyłki dla celów testowych (Zastąp to później prawdziwym fetch()):
+            setTimeout(() => {
+                formStatus.style.color = "var(--s8-blue-1)";
+                formStatus.textContent = successMsgs[currentLang];
+                contactForm.reset();
+                setTimeout(() => { formStatus.style.display = 'none'; }, 5000); // Ukryj po 5s
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
