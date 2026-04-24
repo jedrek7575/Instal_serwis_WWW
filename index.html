@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instal-Serwis</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="Images/logo.webp">
     
     <link rel="icon" type="image/png" sizes="32x32" href="Images/logo.webp">
     <link rel="icon" type="image/png" sizes="16x16" href="Images/logo.webp">
@@ -230,11 +230,19 @@
             padding: 40px 60px;
             z-index: 2;
         }
+        .hero-img {
+            display: flex;
+            height: 90px;
+        }
         .hero-content h1 {
             font-size: 4rem;
             margin: 0 0 15px 0;
             font-weight: 700;
             letter-spacing: 2px;
+            display: flex;
+            gap: 10px;
+            margin-left: 2rem;
+            margin-right: 2rem;
         }
         .hero-content p {
             font-size: 1.2rem;
@@ -685,6 +693,22 @@
             .hamburger.active span:nth-child(2) { opacity: 0; }
             .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
 
+                    .hero-img {
+            display: flex;
+            height: 50px;
+            
+        }
+        .hero-content h1 {
+            font-size: 2rem;
+            
+            font-weight: 700;
+            letter-spacing: 2px;
+            display: flex;
+            gap: 10px;
+            margin-left: 2rem;
+            margin-right: 2rem;
+        }
+
             /* RWD dla sekcji O Nas (Tryptyk) */
             .about-layout {
                 flex-direction: column;
@@ -783,7 +807,7 @@
                 <path d="M 75 95 L 105 85 L 90 20" class="draw-path" />
             </svg>
             
-            <h1>Instal-Serwis</h1>
+            <h1><img class="hero-img" src="Images/logo.webp">Instal-Serwis</h1>
             <p data-i18n="hero-desc">Tradycja w montażu, precyzja w detalu. Rodzinne rzemiosło instalacji gazowych na bezkompromisowym poziomie.</p>
         </div>
     </section>
@@ -807,7 +831,7 @@
         <div class="offer-tile">
             <div class="offer-text">
                 <h3 data-i18n="offer-1-title">Instalacje Gazów Technicznych</h3>
-                <p class="elegant-text" data-i18n="offer-1-desc">Kompleksowe wdrażanie magistrali gazowych dla hal produkcyjnych, szpitali i zakładów chemicznych. Od projektu po rygorystyczne testy szczelności.</p>
+                <p class="elegant-text" data-i18n="offer-1-desc">Wiemy, jak rygorystyczne normy panują w branży farmaceutycznej, laboratoryjnej i spożywczej. Dlatego nasze instalacje wykonujemy z zegarmistrzowską precyzją. Nie jesteśmy anonimowym gigantem, co ułatwia kontakt i przejrzystość na każdym etapie. Skontaktuj się z nami, a osobiście odpowiemy na wszystkie Twoje pytania.</p>
                <a href="#" class="btn-accent">
                 <span data-i18n="btn-read-more">Czytaj więcej</span>
                 <span class="arrow">❯</span>
@@ -822,7 +846,7 @@
         <div class="offer-tile">
             <div class="offer-text">
                 <h3 data-i18n="offer-2-title">Zbiorniki Kriogeniczne</h3>
-                <p class="elegant-text" data-i18n="offer-2-desc">Profesjonalny montaż i integracja stacji zgazowania. Operujemy na sprzęcie najwyższej klasy, gwarantując parametry niezbędne do bezpiecznej pracy.</p>
+                <p class="elegant-text" data-i18n="offer-2-desc">Bierzemy pełną odpowiedzialność za cykl życia Twoich urządzeń: od precyzyjnego montażu nowych zbiorników kriogenicznych, przez ich bieżące serwisowanie, aż po generalne remonty. Gwarantujemy profesjonalizm, dzięki któremu Twój zbiornik będzie w pełni bezpieczny, funkcjonalny i gotowy do pracy.</p>
                                <a href="#" class="btn-accent">
                 <span data-i18n="btn-read-more">Czytaj więcej</span>
                 <span class="arrow">❯</span>
@@ -835,7 +859,7 @@
 
         <div class="offer-tile">
             <div class="offer-text">
-                <h3 data-i18n="offer-3-title">Konstrukcje Przemysłowe</h3>
+                <h3 data-i18n="offer-3-title">Przemysł spożywczy</h3>
                 <p class="elegant-text" data-i18n="offer-3-desc">Budujemy technologiczne kręgosłupy fabryk. Wykonujemy zaawansowane podpory, estakady i systemy nośne z inżynieryjną dokładnością.</p>
                                <a href="#" class="btn-accent">
                 <span data-i18n="btn-read-more">Czytaj więcej</span>
