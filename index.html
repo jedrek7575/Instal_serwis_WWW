@@ -230,20 +230,27 @@
             padding: 40px 60px;
             z-index: 2;
         }
-        .hero-img {
-            display: flex;
-            height: 90px;
-        }
-        .hero-content h1 {
-            font-size: 4rem;
-            margin: 0 0 15px 0;
-            font-weight: 700;
-            letter-spacing: 2px;
-            display: flex;
-            gap: 10px;
-            margin-left: 2rem;
-            margin-right: 2rem;
-        }
+.hero-content h1 {
+    display: flex;
+    align-items: center;        /* Centruje logo i tekst idealnie w poziomie (tej samej wysokości) */
+    justify-content: center;    /* Trzyma całość na środku ekranu */
+    gap: 20px;                  /* Odstęp między logo a nazwą firmy */
+    margin: 0 0 15px 0;
+    
+    /* PŁYNNE SKALOWANIE: min 2rem, optymalnie 5vw, max 4rem */
+    font-size: clamp(2rem, 5vw, 4rem); 
+    font-weight: 700;
+    letter-spacing: 2px;
+    
+    white-space: nowrap;        /* ABSOLUTNY ZAKAZ ŁAMANIA TEKSTU W POŁOWIE */
+}
+
+.hero-img {
+    height: 90px;
+    width: auto;
+    flex-shrink: 0;             /* Zapobiega zniekształcaniu/zgniataniu logo, gdy brakuje miejsca */
+    object-fit: contain;        /* Pilnuje proporcji grafiki */
+}
         .hero-content p {
             font-size: 1.2rem;
             max-width: 600px;
@@ -608,9 +615,7 @@
         /* Dla urządzeń o szerokości ekranu 700px i mniej */
         @media (max-width: 700px) {
             
-            .hero-content h1 {
-                font-size: 2.5rem; /* Zmniejszamy wielki napis na mniejszym ekranie */
-            }
+
 
             .nav-wrapper {
                 width: 15vw;
@@ -693,21 +698,18 @@
             .hamburger.active span:nth-child(2) { opacity: 0; }
             .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
 
-                    .hero-img {
-            display: flex;
-            height: 50px;
-            
-        }
-        .hero-content h1 {
-            font-size: 2rem;
-            
-            font-weight: 700;
-            letter-spacing: 2px;
-            display: flex;
-            gap: 10px;
-            margin-left: 2rem;
-            margin-right: 2rem;
-        }
+.hero-content h1 {
+        gap: 12px;              /* Nieco mniejszy odstęp na telefonie */
+        margin-left: 0;         /* Usuwamy boczne marginesy, żeby odzyskać przestrzeń */
+        margin-right: 0;
+        
+        /* Skalowanie na bardzo wąskie ekrany (np. stare iPhone'y) */
+        font-size: clamp(1.4rem, 6vw, 2rem); 
+    }
+
+    .hero-img {
+        height: 50px;           /* Proporcjonalnie mniejsze logo na mobile */
+    }
 
             /* RWD dla sekcji O Nas (Tryptyk) */
             .about-layout {
@@ -807,7 +809,10 @@
                 <path d="M 75 95 L 105 85 L 90 20" class="draw-path" />
             </svg>
             
-            <h1><img class="hero-img" src="Images/logo.webp">Instal-Serwis</h1>
+            <h1>
+    <img class="hero-img" src="Images/logo.webp" alt="Logo Instal-Serwis">
+    <span>Instal-Serwis</span>
+</h1>
             <p data-i18n="hero-desc">Tradycja w montażu, precyzja w detalu. Rodzinne rzemiosło instalacji gazowych na bezkompromisowym poziomie.</p>
         </div>
     </section>
