@@ -407,31 +407,65 @@ langButtons.forEach(btn => {
 // 4. Inicjalizacja języka z pamięci przy starcie strony
 applyLanguage(currentLang);
 
-        // LOGIKA FORMULARZA KONTAKTOWEGO (Przygotowana pod Resend API / Fetch)
-        const contactForm = document.getElementById('resend-contact-form');
-        const formStatus = document.getElementById('form-status');
+       
 
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault(); // Blokujemy standardowe przeładowanie strony!
-            
-            formStatus.style.display = 'block';
-            formStatus.style.color = "var(--text-muted)";
-            
-            // Komunikaty ładowania w aktualnie wybranym języku
-            const loadingMsgs = { pl: "Wysyłanie wiadomości...", en: "Sending message...", de: "Nachricht wird gesendet..." };
-            const successMsgs = { pl: "Wiadomość wysłana pomyślnie!", en: "Message sent successfully!", de: "Nachricht erfolgreich gesendet!" };
-            
-            const currentLang = document.querySelector('.lang-btn.active').getAttribute('data-lang');
-            formStatus.textContent = loadingMsgs[currentLang];
+        // Konfiguracja Brevo
+const BREVO_API_KEY = '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';
 
-            // Symulacja wysyłki dla celów testowych (Zastąp to później prawdziwym fetch()):
-            setTimeout(() => {
-                formStatus.style.color = "var(--s8-blue-1)";
-                formStatus.textContent = successMsgs[currentLang];
-                contactForm.reset();
-                setTimeout(() => { formStatus.style.display = 'none'; }, 5000); // Ukryj po 5s
-            }, 1000);
-        });
+const contactForm = document.getElementById('resend-contact-form');
+const formStatus = document.getElementById('form-status');
+
+contactForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Blokada przycisku, żeby nie klikali 100 razy
+    const btn = contactForm.querySelector('.btn-submit');
+    btn.disabled = true;
+    
+    formStatus.style.display = 'block';
+    formStatus.style.color = "var(--text-muted)";
+    formStatus.textContent = "Wysyłanie wiadomości..."; 
+
+    const payload = {
+        sender: { name: "Instal-Serwis WWW", email: "biuro@instalserwis.eu" },
+        to: [{ email: "biuro@omnis.org.pl", name: "Biuro" }],
+        subject: "Nowe zapytanie: " + document.getElementById('name').value,
+        htmlContent: `
+            <h3>Nowa wiadomość ze strony:</h3>
+            <p><strong>Od:</strong> ${document.getElementById('name').value}</p>
+            <p><strong>E-mail klienta:</strong> ${document.getElementById('email').value}</p>
+            <p><strong>Treść:</strong></p>
+            <p>${document.getElementById('message').value}</p>
+        `
+    };
+
+    fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json',
+            'api-key': BREVO_API_KEY,
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(response => {
+        if (response.ok) {
+            formStatus.style.color = "var(--s8-blue-1)";
+            formStatus.textContent = "Wiadomość wysłana pomyślnie!";
+            contactForm.reset();
+        } else {
+            throw new Error('Błąd API');
+        }
+    })
+    .catch(error => {
+        formStatus.style.color = "var(--s8-red-1)";
+        formStatus.textContent = "Wystąpił błąd. Spróbuj ponownie później.";
+    })
+    .finally(() => {
+        btn.disabled = false;
+        setTimeout(() => { formStatus.style.display = 'none'; }, 6000);
+    });
+});
     </script>
 </body>
 </html>
