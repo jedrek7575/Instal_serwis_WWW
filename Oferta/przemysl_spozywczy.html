@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zbiorniki Kriogeniczne | Instal-Serwis</title>
+    <link rel="icon" type="image/svg+xml" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="32x32" href="Images/logo.webp">
+    <link rel="icon" type="image/png" sizes="16x16" href="Images/logo.webp">
+    <link rel="apple-touch-icon" sizes="180x180" href="Images/logo.webp">
+    <meta name="theme-color" content="#05070d">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           ZMIENNE KOLORYSTYCZNE
+           ========================================= */
+        :root {
+            --bg-deep: #05070d; 
+            --text-light: #e6ebf1; 
+            --text-muted: #8d9bb0;
+            --s8-blue-1: #2bc0e4; 
+            --s8-blue-2: #1e5799; 
+            --gradient-accent: linear-gradient(135deg, var(--s8-blue-1) 0%, var(--s8-blue-2) 100%);
+            --s8-red-1: #e02f44; 
+            --s8-red-2: #8a1523; 
+            --gradient-accent-red: linear-gradient(135deg, var(--s8-red-1) 0%, var(--s8-red-2) 100%);
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* =========================================
+           NAVBAR (Desktop)
+           ========================================= */
+        .nav-wrapper { position: fixed; top: 0; right: 0; width: 77vw; height: 55px; z-index: 1000; }
+        .nav-inner { position: absolute; inset: 0; background: rgba(5, 7, 13, 0); clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); display: flex; align-items: center; justify-content: end; padding: 0 40px; }
+        .nav-border { opacity: 0; }
+        
+        .nav-wrapper.beyond .nav-border { position: absolute; inset: 0; background: var(--gradient-accent); clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); transform: translateY(2px) translateX(-3px); transition: 0.7s; opacity: 1; }
+        .nav-wrapper.beyond .nav-inner { position: absolute; inset: 0; background: rgba(5, 7, 13, 0.85); backdrop-filter: blur(12px); clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%); display: flex; align-items: center; padding: 0 40px; transition: 0.5s; }
+        
+        .nav-inner a { color: var(--text-light); text-decoration: none; margin-right: 30px; font-weight: bold; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; }
+        .nav-inner a:hover { color: var(--s8-blue-1); }
+
+        .lang-switcher { display: flex; gap: 8px; margin-right: 20px; }
+        .lang-btn { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: var(--text-muted); padding: 6px 12px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.75rem; cursor: pointer; transition: all 0.3s ease; clip-path: polygon(15% 0, 100% 0, 85% 100%, 0 100%); }
+        .lang-btn:hover, .lang-btn.active { background: var(--gradient-accent); color: #fff; border-color: transparent; }
+
+        .hamburger { display: none; flex-direction: column; justify-content: space-around; width: 30px; height: 24px; cursor: pointer; position: absolute; top: 15px; right: 25px; z-index: 1001; }
+        .hamburger span { width: 100%; height: 4px; background: var(--gradient-accent); border-radius: 0; transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1); }
+        .hamburger span:nth-child(1) { clip-path: polygon(0 0, 100% 0, 92% 100%, 5% 100%); }
+        .hamburger span:nth-child(2) { clip-path: polygon(5% 0, 100% 0, 95% 100%, 0 100%); width: 80%; align-self: flex-end; }
+        .hamburger span:nth-child(3) { clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%); }
+        .hamburger:hover span:nth-child(1), .hamburger:hover span:nth-child(2), .hamburger:hover span:nth-child(3), .hamburger.active:hover span { background: var(--gradient-accent-red); width: 100%; }
+
+        /* =========================================
+           SUB-HERO
+           ========================================= */
+        .sub-hero { position: relative; height: 45vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding-top: 50px; }
+        .sub-hero-bg { position: absolute; inset: 0; background: url('https://picsum.photos/id/1076/1920/1080') center/cover; filter: blur(5px) brightness(0.3); z-index: 1; }
+        .sub-hero-content { position: relative; z-index: 2; padding: 0 20px; }
+        .sub-hero-content h1 { font-size: clamp(2rem, 4vw, 3.5rem); margin: 0 0 15px 0; font-weight: 700; letter-spacing: 2px; color: var(--s8-blue-1); }
+        .sub-hero-content p { font-size: 1.1rem; max-width: 600px; margin: 0 auto; color: var(--text-light); line-height: 1.6; }
+
+        /* =========================================
+           KARUZELA
+           ========================================= */
+        .page-carousel-section { padding: 80px 20px 40px 20px; }
+        .carousel-wrapper { display: flex; align-items: center; justify-content: center; gap: 40px; }
+        .carousel-stack { position: relative; width: 600px; height: 400px; }
+        .carousel-stack img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border-radius: 8px; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .card.prev { transform: translate(-30px, 20px) rotate(-4deg); z-index: 1; opacity: 0.6; }
+        .card.active { transform: translate(0, 0) rotate(0deg) scale(1.05); z-index: 10; opacity: 1; box-shadow: 0 20px 40px rgba(43, 192, 228, 0.2); }
+        .card.next { transform: translate(30px, -15px) rotate(3deg); z-index: 2; opacity: 0.8; }
+        .btn { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: white; width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s; display: flex; justify-content: center; align-items: center; }
+        .btn:hover { background: var(--gradient-accent); border-color: transparent; }
+
+        /* =========================================
+           SEKCJE NAPRZEMIENNE (Zygzak / Parallax)
+           ========================================= */
+        .content-blocks { padding-bottom: 100px; }
+        .split-row { display: flex; align-items: center; justify-content: space-between; max-width: 1300px; margin: 0 auto; padding: 80px 20px; gap: 60px; }
+        .split-row.reverse { flex-direction: row-reverse; }
+        .split-text { width: 50%; }
+        .split-text h2 { font-size: 2.2rem; color: var(--text-light); margin-bottom: 20px; position: relative; display: inline-block; }
+        .split-text h2::after { content: ''; position: absolute; bottom: -10px; left: 0; width: 60%; height: 3px; background: var(--gradient-accent); clip-path: polygon(0 0, 100% 0, 95% 100%, 5% 100%); }
+        .split-text p { font-size: 1.1rem; line-height: 1.8; color: var(--text-muted); margin-bottom: 20px; }
+        .split-img { width: 45%; height: 450px; background-attachment: fixed; background-position: center; background-size: cover; background-repeat: no-repeat;  transition: filter 0.5s ease, transform 0.5s cubic-bezier(0.25, 1, 0.5, 1); }
+        
+        .split-row .split-img { clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%); }
+        .split-row.reverse .split-img { clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%); }
+
+        /* =========================================
+           STOPKA
+           ========================================= */
+        .site-footer { background-color: #030408; position: relative; padding-top: 70px; border-top: 1px solid rgba(255,255,255,0.02); }
+        .footer-top-accent { position: absolute; top: -2px; left: 0; width: 100%; height: 2px; background: var(--gradient-accent); }
+        .footer-container { display: flex; flex-wrap: wrap; justify-content: space-between; max-width: 1200px; margin: 0 auto; padding: 0 40px 50px 40px; gap: 40px; }
+        .footer-col { flex: 1; min-width: 250px; }
+        .footer-brand { font-size: 1.8rem; color: var(--text-light); margin: 0 0 15px 0; font-weight: 700; }
+        .footer-col h4 { color: var(--s8-blue-1); font-size: 1.1rem; margin: 0 0 20px 0; text-transform: uppercase; }
+        .footer-text, .footer-list li { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+        .footer-list { list-style: none; padding: 0; margin: 0; }
+        .footer-list li { margin-bottom: 12px; display: flex; align-items: flex-start; gap: 12px; }
+        .accent-icon { color: var(--s8-blue-1); font-weight: bold; font-size: 1.1rem; }
+        .footer-bottom { text-align: center; padding: 20px; background-color: #010103; color: rgba(141, 155, 176, 0.5); font-size: 0.8rem; letter-spacing: 1px; }
+
+        /* =========================================
+           MOBILE RWD (Zgodne z index.html)
+           ========================================= */
+        @media (max-width: 700px) {
+            
+            /* 1. Stan początkowy: Przezroczyste i ukryte na Hero */
+            .nav-wrapper {
+                width: 15vw;
+                height: 55px;
+                transition: 0.3s;
+            }
+            .nav-inner {
+                position: absolute; inset: 0;
+                background: transparent; /* Przezroczyste na Hero */
+                backdrop-filter: none;
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                padding: 0 40px;
+                transition: 0.5s;
+            }
+            .nav-border { opacity: 0; transition: 0.5s; }
+
+            .nav-inner a { display: none; padding-top: 25%; }
+            .lang-switcher { padding-bottom: 25%; padding-top: 25%; display: none; gap: 8px; margin-right: 30px; }
+            .lang-btn { display: none; }
+
+            /* 2. Zjechanie w dół (.beyond) - Pojawia się tło i gradientowa krawędź */
+             .nav-inner {
+                background: rgba(5, 7, 13, 0.85);
+                backdrop-filter: blur(12px);
+            }
+            .nav-border {
+                position: absolute; inset: 0;
+                background: var(--gradient-accent);
+                clip-path: polygon(100% 0, 0 0, 5% 30%, 2% 70%, 10% 100%, 100% 100%);
+                transform: translateY(2px) translateX(-3px);
+                opacity: 1;
+            }
+
+            /* 3. Rozwinięte menu (.active) - Otwiera się na 95vw 90vh */
+            .nav-wrapper.active {
+                width: 95vw; 
+                height: 90vh;
+            }
+            .nav-wrapper.active .nav-inner {
+                background: rgba(5, 7, 13, 0.95); /* Trochę ciemniejsze dla czytelności */
+                backdrop-filter: blur(12px);
+            }
+            .nav-wrapper.active .nav-inner a,
+            .nav-wrapper.active .lang-switcher, 
+            .nav-wrapper.active .lang-btn {
+                display: flex;
+            }
+
+            /* 4. Hamburger */
+            .hamburger { display: flex; z-index: 2000; right: 25px; top: 15px; }
+            .hamburger.active span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+            .hamburger.active span:nth-child(2) { opacity: 0; }
+            .hamburger.active span:nth-child(3) { transform: translateY(-10.5px) rotate(-45deg); }
+
+            /* ----- RWD DLA ZAWARTOŚCI PODSTRONY ----- */
+            .sub-hero-content h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); }
+            .carousel-stack { width: 100%; height: 250px; }
+            .split-row, .split-row.reverse { flex-direction: column; padding: 40px 20px; gap: 30px; }
+            .split-text { width: 100%; order: 2; }
+            .split-img { width: 100%; height: 250px; order: 1; background-attachment: scroll; clip-path: none !important; border-radius: 4px; }
+            .footer-container { flex-direction: column; padding: 0 20px 30px 20px; gap: 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-wrapper" id="navbar">
+        <div class="nav-border"></div>
+        <div class="nav-inner">
+            <a href="../index.html" class="nav-element" data-i18n="nav-home">Strona Główna</a>
+            <a href="zespol.html" class="nav-element" data-i18n="nav-about">Zespół</a>
+            <a href="realizacje.html" class="nav-element" data-i18n="nav-portfolio">Realizacje</a>
+            <a href="kontakt.html" class="nav-element" data-i18n="nav-contact">Kontakt</a>
+            
+            <div class="lang-switcher">
+                <button class="lang-btn active nav-element" data-lang="pl">PL</button>
+                <button class="lang-btn nav-element" data-lang="en">EN</button>
+                <button class="lang-btn nav-element" data-lang="de">DE</button>
+            </div>
+        </div>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <header class="sub-hero" id="hero">
+        <div class="sub-hero-bg"></div>
+        <div class="sub-hero-content">
+            <h1 data-i18n="sub-hero-title">Zbiorniki Kriogeniczne</h1>
+            <p data-i18n="sub-hero-desc">Bezkompromisowa precyzja instalacji, gwarantująca bezpieczeństwo w skrajnych temperaturach.</p>
+        </div>
+    </header>
+
+    <section class="page-carousel-section">
+        <div class="carousel-wrapper" id="main-carousel">
+            <button class="btn btn-prev">❮</button>
+            <div class="carousel-stack">
+                <img src="https://picsum.photos/id/1020/800/500" class="card active" alt="Montaż 1">
+                <img src="https://picsum.photos/id/1032/800/500" class="card next" alt="Montaż 2">
+                <img src="https://picsum.photos/id/1043/800/500" class="card prev" alt="Montaż 3">
+            </div>
+            <button class="btn btn-next">❯</button>
+        </div>
+    </section>
+
+    <section class="content-blocks">
+        
+        <div class="split-row">
+            <div class="split-img" style="background-image: url('https://picsum.photos/id/1075/800/1000');"></div>
+            <div class="split-text">
+                <h2 data-i18n="block1-title">Profesjonalny Montaż i Posadowienie</h2>
+                <p data-i18n="block1-p1">Bierzemy pełną odpowiedzialność za cykl życia Twoich urządzeń: od precyzyjnego montażu nowych zbiorników kriogenicznych, po ich kalibrację. Posadowienie tak potężnych i wrażliwych struktur wymaga inżynieryjnego planowania, idealnego wypoziomowania oraz wiedzy z zakresu logistyki ciężkiej.</p>
+                <p data-i18n="block1-p2">Dzięki wieloletniemu rzemiosłu, nasze instalacje zachowują absolutną stabilność i gotowość do pracy w ekstremalnie niskich temperaturach ciekłych gazów (azot, tlen, argon).</p>
+            </div>
+        </div>
+
+        <div class="split-row reverse">
+            <div class="split-img" style="background-image: url('https://picsum.photos/id/1080/800/1000');"></div>
+            <div class="split-text">
+                <h2 data-i18n="block2-title">Infrastruktura i Rurociągi</h2>
+                <p data-i18n="block2-p1">Sam zbiornik to dopiero początek. Aby system działał wydajnie, niezbędna jest perfekcyjnie zintegrowana infrastruktura towarzysząca. Projektujemy i wdrażamy stacje zgazowania, dobieramy odpowiednie parownice oraz wykonujemy wysoce izolowane rurociągi próżniowe.</p>
+                <p data-i18n="block2-p2">Każda spoina i każdy zawór w naszych instalacjach podlega rygorystycznym testom szczelności. Gwarantujemy minimalne straty termiczne i maksymalną wydajność przesyłu.</p>
+            </div>
+        </div>
+
+        <div class="split-row">
+            <div class="split-img" style="background-image: url('https://picsum.photos/id/1048/800/1000');"></div>
+            <div class="split-text">
+                <h2 data-i18n="block3-title">Serwis, Rewizje i Legalizacje UDT</h2>
+                <p data-i18n="block3-p1">Instalacje kriogeniczne podlegają surowemu prawu i normom dozoru technicznego. Jako rodzinny zespół ekspertów przeprowadzamy kompleksowe przeglądy, przygotowujemy zbiorniki do rewizji wewnętrznych i zewnętrznych oraz asystujemy przy odbiorach UDT.</p>
+                <p data-i18n="block3-p2">Oprócz okresowych przeglądów, oferujemy błyskawiczny serwis naprawczy. Przywracamy szczelność, wymieniamy armaturę bezpieczeństwa i dbamy o to, by przestój w Twoim zakładzie trwał absolutne minimum.</p>
+            </div>
+        </div>
+
+    </section>
+
+    <footer class="site-footer">
+        <div class="footer-top-accent"></div>
+        <div class="footer-container">
+            <div class="footer-col">
+                <h3 class="footer-brand">Instal-Serwis</h3>
+                <p class="footer-text" data-i18n="footer-motto">Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.</p>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-contact-title">Kontakt</h4>
+                <ul class="footer-list">
+                    <li><span class="accent-icon">⚲</span> ul. Źródlana 5, 42-470 Siewierz</li>
+                    <li><span class="accent-icon">☏</span> +48 797 181 484</li>
+                    <li><span class="accent-icon">✉</span> biuro@instal-serwis.pl</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4 data-i18n="footer-company-title">Dane firmowe</h4>
+                <ul class="footer-list">
+                    <li><strong style="color: var(--text-light);">KOCHLIK ANDRZEJ INSTAL-SERWIS</strong></li>
+                    <li>NIP: 6491366095</li>
+                    <li>REGON: 273253330</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year"></span> KOCHLIK ANDRZEJ INSTAL-SERWIS. Wszelkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        // 1. Zmiana stylu Navbara po scrollu
+        const navbar = document.getElementById('navbar');
+        const heroHeight = document.getElementById('hero').offsetHeight;
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > heroHeight - 80) {
+                navbar.classList.add('beyond');
+            } else {
+                navbar.classList.remove('beyond');
+            }
+        });
+
+        // 2. Obsługa Hamburgera (Mobile Menu)
+        const hamburger = document.getElementById('hamburger');
+        const navElements = document.querySelectorAll('.nav-element');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navbar.classList.toggle('active');
+        });
+
+        navElements.forEach(element => {
+            element.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navbar.classList.remove('active');
+            });
+        });
+
+        // 3. Logika Karuzeli 
+        const mainCarousel = document.getElementById('main-carousel');
+        if (mainCarousel) {
+            const cards = Array.from(mainCarousel.querySelectorAll('.card'));
+            const btnPrev = mainCarousel.querySelector('.btn-prev');
+            const btnNext = mainCarousel.querySelector('.btn-next');
+            
+            const updateCards = () => {
+                cards.forEach(card => card.className = 'card'); 
+                cards[0].classList.add('active');
+                cards[1].classList.add('next');
+                cards[2].classList.add('prev');
+            };
+
+            btnNext.addEventListener('click', () => {
+                cards.push(cards.shift());
+                updateCards();
+            });
+
+            btnPrev.addEventListener('click', () => {
+                cards.unshift(cards.pop());
+                updateCards();
+            });
+        }
+
+        // 4. Aktualny Rok
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // 5. Tłumaczenia 
+        const translations = {
+            pl: {
+                "nav-home": "Strona Główna",
+                "nav-about": "Zespół",
+                "nav-portfolio": "Realizacje",
+                "nav-contact": "Kontakt",
+                
+                "sub-hero-title": "Zbiorniki Kriogeniczne",
+                "sub-hero-desc": "Bezkompromisowa precyzja instalacji, gwarantująca bezpieczeństwo w skrajnych temperaturach.",
+                
+                "block1-title": "Profesjonalny Montaż i Posadowienie",
+                "block1-p1": "Bierzemy pełną odpowiedzialność za cykl życia Twoich urządzeń: od precyzyjnego montażu nowych zbiorników kriogenicznych, po ich kalibrację. Posadowienie tak potężnych i wrażliwych struktur wymaga inżynieryjnego planowania, idealnego wypoziomowania oraz wiedzy z zakresu logistyki ciężkiej.",
+                "block1-p2": "Dzięki wieloletniemu rzemiosłu, nasze instalacje zachowują absolutną stabilność i gotowość do pracy w ekstremalnie niskich temperaturach ciekłych gazów (azot, tlen, argon).",
+                
+                "block2-title": "Infrastruktura i Rurociągi",
+                "block2-p1": "Sam zbiornik to dopiero początek. Aby system działał wydajnie, niezbędna jest perfekcyjnie zintegrowana infrastruktura towarzysząca. Projektujemy i wdrażamy stacje zgazowania, dobieramy odpowiednie parownice oraz wykonujemy wysoce izolowane rurociągi próżniowe.",
+                "block2-p2": "Każda spoina i każdy zawór w naszych instalacjach podlega rygorystycznym testom szczelności. Gwarantujemy minimalne straty termiczne i maksymalną wydajność przesyłu.",
+                
+                "block3-title": "Serwis, Rewizje i Legalizacje UDT",
+                "block3-p1": "Instalacje kriogeniczne podlegają surowemu prawu i normom dozoru technicznego. Jako rodzinny zespół ekspertów przeprowadzamy kompleksowe przeglądy, przygotowujemy zbiorniki do rewizji wewnętrznych i zewnętrznych oraz asystujemy przy odbiorach UDT.",
+                "block3-p2": "Oprócz okresowych przeglądów, oferujemy błyskawiczny serwis naprawczy. Przywracamy szczelność, wymieniamy armaturę bezpieczeństwa i dbamy o to, by przestój w Twoim zakładzie trwał absolutne minimum.",
+                
+                "footer-motto": "Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.",
+                "footer-contact-title": "Kontakt",
+                "footer-company-title": "Dane firmowe"
+            },
+            en: {
+                "nav-home": "Home",
+                "nav-about": "Team",
+                "nav-portfolio": "Projects",
+                "nav-contact": "Contact",
+                
+                "sub-hero-title": "Cryogenic Tanks",
+                "sub-hero-desc": "Uncompromising installation precision, ensuring safety in extreme temperatures.",
+                
+                "block1-title": "Professional Assembly and Positioning",
+                "block1-p1": "We take full responsibility for the life cycle of your equipment: from the precise installation of new cryogenic tanks to their calibration. The positioning of such massive and sensitive structures requires engineering planning, perfect leveling, and heavy logistics expertise.",
+                "block1-p2": "Thanks to years of craftsmanship, our installations maintain absolute stability and readiness to operate in the extremely low temperatures of liquid gases (nitrogen, oxygen, argon).",
+                
+                "block2-title": "Infrastructure and Pipelines",
+                "block2-p1": "The tank itself is just the beginning. For the system to operate efficiently, perfectly integrated supporting infrastructure is required. We design and implement gasification stations, select appropriate vaporizers, and build highly insulated vacuum pipelines.",
+                "block2-p2": "Every weld and every valve in our installations undergoes rigorous leak testing. We guarantee minimal thermal losses and maximum transmission efficiency.",
+                
+                "block3-title": "Service, Inspections, and UDT Certifications",
+                "block3-p1": "Cryogenic installations are subject to strict laws and technical inspection standards. As a family team of experts, we conduct comprehensive overhauls, prepare tanks for internal and external inspections, and assist with UDT (Office of Technical Inspection) acceptances.",
+                "block3-p2": "In addition to periodic inspections, we offer rapid repair services. We restore tightness, replace safety valves, and ensure that downtime in your facility is kept to an absolute minimum.",
+                
+                "footer-motto": "Tradition in assembly, precision in detail. Setting standards for industrial installations since 2007.",
+                "footer-contact-title": "Contact",
+                "footer-company-title": "Company details"
+            },
+            de: {
+                "nav-home": "Startseite",
+                "nav-about": "Team",
+                "nav-portfolio": "Projekte",
+                "nav-contact": "Kontakt",
+                
+                "sub-hero-title": "Kryotanks",
+                "sub-hero-desc": "Kompromisslose Installationspräzision, die Sicherheit bei extremen Temperaturen garantiert.",
+                
+                "block1-title": "Professionelle Montage und Aufstellung",
+                "block1-p1": "Wir übernehmen die volle Verantwortung für den Lebenszyklus Ihrer Anlagen: von der präzisen Installation neuer Kryotanks bis hin zu deren Kalibrierung. Die Aufstellung solch massiver und empfindlicher Strukturen erfordert ingenieurtechnische Planung, perfekte Nivellierung und Fachwissen in der Schwerlastlogistik.",
+                "block1-p2": "Dank jahrelanger Handwerkskunst behalten unsere Installationen absolute Stabilität und Betriebsbereitschaft bei den extrem niedrigen Temperaturen von Flüssiggasen (Stickstoff, Sauerstoff, Argon).",
+                
+                "block2-title": "Infrastruktur und Rohrleitungen",
+                "block2-p1": "Der Tank selbst ist nur der Anfang. Damit das System effizient arbeiten kann, ist eine perfekt integrierte Begleitinfrastruktur erforderlich. Wir entwerfen und implementieren Verdampfungsstationen, wählen geeignete Verdampfer aus und bauen hochisolierte Vakuumrohrleitungen.",
+                "block2-p2": "Jede Schweißnaht und jedes Ventil in unseren Anlagen wird strengen Dichtheitsprüfungen unterzogen. Wir garantieren minimale thermische Verluste und maximale Übertragungseffizienz.",
+                
+                "block3-title": "Service, Inspektionen und UDT-Zertifizierungen",
+                "block3-p1": "Kryoanlagen unterliegen strengen Gesetzen und Normen der technischen Überwachung. Als Familien-Expertenteam führen wir umfassende Überholungen durch, bereiten Tanks für interne und externe Inspektionen vor und unterstützen bei UDT-Abnahmen.",
+                "block3-p2": "Neben regelmäßigen Inspektionen bieten wir einen schnellen Reparaturservice an. Wir stellen die Dichtheit wieder her, tauschen Sicherheitsventile aus und sorgen dafür, dass Ausfallzeiten in Ihrer Anlage auf ein absolutes Minimum reduziert werden.",
+                
+                "footer-motto": "Tradition in der Montage, Präzision im Detail. Wir setzen Maßstäbe für Industrieanlagen seit 2007.",
+                "footer-contact-title": "Kontakt",
+                "footer-company-title": "Firmendetails"
+            }
+        };
+
+        const langButtons = document.querySelectorAll('.lang-btn');
+        const i18nElements = document.querySelectorAll('[data-i18n]');
+
+        langButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                langButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const selectedLang = btn.getAttribute('data-lang');
+                i18nElements.forEach(el => {
+                    const key = el.getAttribute('data-i18n');
+                    if(translations[selectedLang][key]) {
+                        el.textContent = translations[selectedLang][key];
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
