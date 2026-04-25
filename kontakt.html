@@ -306,10 +306,13 @@
         // Rok w stopce
         document.getElementById('current-year').textContent = new Date().getFullYear();
 
-        // TŁUMACZENIA KONTAKT
+// TŁUMACZENIA KONTAKT
         const translations = {
             pl: {
-                "nav-home": "Strona Główna", "nav-about": "Zespół", "nav-portfolio": "Realizacje", "nav-contact": "Kontakt",
+                "nav-home": "Strona Główna",
+                "nav-about": "Zespół",
+                "nav-portfolio": "Realizacje",
+                "nav-contact": "Kontakt",
                 "contact-hero-title": "Bezpośredni Kontakt",
                 "contact-hero-desc": "Zadzwoń lub napisz. Bez korporacyjnej centrali, prosto do inżynierów odpowiedzialnych za realizacje.",
                 "contact-title": "Skontaktuj się z nami",
@@ -318,10 +321,14 @@
                 "form-email": "Twój adres e-mail",
                 "form-msg": "Jakiej instalacji potrzebujesz?",
                 "footer-motto": "Tradycja w montażu, precyzja w detalu. Wyznaczamy standardy instalacji przemysłowych od 2007 roku.",
-                "footer-contact-title": "Kontakt", "footer-company-title": "Dane firmowe"
+                "footer-contact-title": "Kontakt",
+                "footer-company-title": "Dane firmowe"
             },
             en: {
-                "nav-home": "Home", "nav-about": "Team", "nav-portfolio": "Projects", "nav-contact": "Contact",
+                "nav-home": "Home",
+                "nav-about": "Team",
+                "nav-portfolio": "Projects",
+                "nav-contact": "Contact",
                 "contact-hero-title": "Direct Contact",
                 "contact-hero-desc": "Call or write. No corporate switchboard, straight to the engineers responsible for the projects.",
                 "contact-title": "Get in touch",
@@ -330,19 +337,24 @@
                 "form-email": "Your e-mail address",
                 "form-msg": "What kind of installation do you need?",
                 "footer-motto": "Tradition in assembly, precision in detail. Setting standards for industrial installations since 2007.",
-                "footer-contact-title": "Contact", "footer-company-title": "Company details"
+                "footer-contact-title": "Contact",
+                "footer-company-title": "Company details"
             },
             de: {
-                "nav-home": "Startseite", "nav-about": "Team", "nav-portfolio": "Projekte", "nav-contact": "Kontakt",
+                "nav-home": "Startseite",
+                "nav-about": "Team",
+                "nav-portfolio": "Projekte",
+                "nav-contact": "Kontakt",
                 "contact-hero-title": "Direkter Kontakt",
                 "contact-hero-desc": "Rufen Sie an oder schreiben Sie uns. Keine Unternehmenszentrale, direkt zu den für die Projekte verantwortlichen Ingenieuren.",
                 "contact-title": "Kontaktieren Sie uns",
-                "btn-send": "Nachricht Senden",
+                "btn-send": "Nachricht senden",
                 "form-name": "Ihr Name / Firmenname",
                 "form-email": "Ihre E-Mail-Adresse",
                 "form-msg": "Welche Art von Installation benötigen Sie?",
                 "footer-motto": "Tradition in der Montage, Präzision im Detail. Wir setzen Maßstäbe für Industrieanlagen seit 2007.",
-                "footer-contact-title": "Kontakt", "footer-company-title": "Firmendetails"
+                "footer-contact-title": "Kontakt",
+                "footer-company-title": "Firmendetails"
             }
         };
 
@@ -417,8 +429,8 @@ applyLanguage(currentLang);
 
        
 
-        // Konfiguracja Brevo
-const BREVO_API_KEY = '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';
+      // UWAGA: Tutaj wklejasz link wygenerowany przez Google, a nie klucz API!
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxB7TQxKwg0NIAzut40AM4XB8kC8lB2lBRmd17LPjypcyGnkSFDFpPosT6wXla_i_CY2g/exec';
 
 const contactForm = document.getElementById('resend-contact-form');
 const formStatus = document.getElementById('form-status');
@@ -426,7 +438,6 @@ const formStatus = document.getElementById('form-status');
 contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
     
-    // Blokada przycisku, żeby nie klikali 100 razy
     const btn = contactForm.querySelector('.btn-submit');
     btn.disabled = true;
     
@@ -434,36 +445,28 @@ contactForm.addEventListener('submit', function(e) {
     formStatus.style.color = "var(--text-muted)";
     formStatus.textContent = "Wysyłanie wiadomości..."; 
 
-    const payload = {
-        sender: { name: "Instal-Serwis WWW", email: "biuro@instalserwis.eu" },
-        to: [{ email: "biuro@omnis.org.pl", name: "Biuro" }],
-        subject: "Nowe zapytanie: " + document.getElementById('name').value,
-        htmlContent: `
-            <h3>Nowa wiadomość ze strony:</h3>
-            <p><strong>Od:</strong> ${document.getElementById('name').value}</p>
-            <p><strong>E-mail klienta:</strong> ${document.getElementById('email').value}</p>
-            <p><strong>Treść:</strong></p>
-            <p>${document.getElementById('message').value}</p>
-        `
+    // Zbieramy tylko proste dane z formularza
+    const formData = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        message: document.getElementById('message').value
     };
 
-    fetch('https://api.brevo.com/v3/smtp/email', {
+    // Wysyłamy do Google Apps Script
+    fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
+        body: JSON.stringify(formData),
+        // Tryb 'no-cors' jest często wymagany przez Google Apps Script przy zapytaniach z przeglądarki
+        mode: 'no-cors', 
         headers: {
-            'accept': 'application/json',
-            'api-key': BREVO_API_KEY,
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(response => {
-        if (response.ok) {
-            formStatus.style.color = "var(--s8-blue-1)";
-            formStatus.textContent = "Wiadomość wysłana pomyślnie!";
-            contactForm.reset();
-        } else {
-            throw new Error('Błąd API');
+            'Content-Type': 'text/plain;charset=utf-8'
         }
+    })
+    .then(() => {
+        // Ponieważ używamy 'no-cors', zawsze traktujemy brak krytycznego błędu jako sukces
+        formStatus.style.color = "var(--s8-blue-1)";
+        formStatus.textContent = "Wiadomość wysłana pomyślnie!";
+        contactForm.reset();
     })
     .catch(error => {
         formStatus.style.color = "var(--s8-red-1)";
